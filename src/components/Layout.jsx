@@ -68,7 +68,7 @@ const Layout = () => {
         <div className="flex items-center gap-2">
           <div className="relative">
             <img
-              src="/public/assets/profile.jpg"
+              src="/assets/profile.jpg"
               alt="Profile"
               className="w-7 h-7 rounded-full object-cover shadow-sm ring-1 ring-white"
             />
@@ -212,3 +212,4 @@ const SidebarContent = ({ toggleLanguage, language }) => {
 
 
 export default Layout;
+

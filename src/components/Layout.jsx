@@ -141,7 +141,7 @@ const SidebarContent = ({ toggleLanguage, language }) => {
       <div className="p-5 flex flex-col items-center bg-gradient-to-b from-gray-50/80 to-white/80 border-b border-gray-100">
         <div className="relative w-20 h-20 rounded-full overflow-hidden mb-3 shadow-md ring-2 ring-white/50">
           <img
-            src="/src/assets/profile.jpg"
+            src={profileImage}
             alt="Profile"
             className="w-full h-full object-cover"
           />
@@ -212,6 +212,7 @@ const SidebarContent = ({ toggleLanguage, language }) => {
 
 
 export default Layout;
+
 
 
 

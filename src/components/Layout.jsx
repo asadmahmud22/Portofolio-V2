@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 const profileImage = "/assets/profile.jpg";
 const Layout = () => {
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguage] = useState("id");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleLanguage = () => {
@@ -212,6 +212,7 @@ const SidebarContent = ({ toggleLanguage, language }) => {
 
 
 export default Layout;
+
 
 
 

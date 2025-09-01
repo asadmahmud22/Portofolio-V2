@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Code } from "lucide-react";
-import profilePic from "@/assets/profile.jpg";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import {
   Home,
@@ -10,7 +9,7 @@ import {
   LayoutDashboard,
   Mail,
 } from "lucide-react";
-
+const profileImage = "/assets/profile.jpg";
 const Layout = () => {
   const [language, setLanguage] = useState("en");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -69,7 +68,7 @@ const Layout = () => {
         <div className="flex items-center gap-2">
           <div className="relative">
             <img
-              src={profilePic}
+              src={profileImage}
               alt="Profile"
               className="w-7 h-7 rounded-full object-cover shadow-sm ring-1 ring-white"
             />
@@ -213,5 +212,6 @@ const SidebarContent = ({ toggleLanguage, language }) => {
 
 
 export default Layout;
+
 
 

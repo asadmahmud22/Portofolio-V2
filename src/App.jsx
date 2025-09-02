@@ -9,6 +9,7 @@ import Projects from "./pages/Projects";
 import Contact from "./pages/Contact";
 import Chat from "./pages/Chat";
 import Dashboard from "./pages/Dashboard";
+import Skills from "./pages/Skills"; // ✅ tambahkan ini
 import "./App.css";
 
 function NotFound() {
@@ -21,10 +22,8 @@ function App() {
   return (
     <>
       {loading ? (
-        // SplashScreen tampil dulu
         <SplashScreen finishLoading={() => setLoading(false)} />
       ) : (
-        // Setelah splash selesai, baru router aktif
         <Router>
           <Routes>
             <Route path="/" element={<Layout />}>
@@ -34,7 +33,7 @@ function App() {
               <Route path="projects" element={<Projects />} />
               <Route path="contact" element={<Contact />} />
               <Route path="dashboard" element={<Dashboard />} />
-              <Route path="skills" element={<Skills />} />
+              <Route path="skills" element={<Skills />} /> {/* ✅ sekarang aman */}
               <Route path="chat" element={<Chat />} />
               <Route path="*" element={<NotFound />} />
             </Route>
@@ -46,4 +45,3 @@ function App() {
 }
 
 export default App;
-

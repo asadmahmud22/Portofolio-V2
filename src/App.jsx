@@ -8,7 +8,6 @@ import Achievements from "./pages/Achievements";
 import Projects from "./pages/Projects";
 import Contact from "./pages/Contact";
 import Chat from "./pages/Chat";
-import Skills from "./pages/Skills";
 import Dashboard from "./pages/Dashboard";
 import "./App.css";
 
@@ -47,3 +46,4 @@ function App() {
 }
 
 export default App;
+

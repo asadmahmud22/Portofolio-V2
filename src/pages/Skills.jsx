@@ -1,6 +1,6 @@
 import React from "react";
 
-const SkillsPage = () => {
+const Skills = () => {
   const skills = [
     {
       category: "Frontend Development",
@@ -140,4 +140,5 @@ const SkillsPage = () => {
   );
 };
 
-export default SkillsPage;
+export default Skills;
+

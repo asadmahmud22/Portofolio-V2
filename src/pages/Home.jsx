@@ -180,7 +180,7 @@ const Home = () => {
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-3">
             <div className="flex flex-wrap gap-2">
               <a
-                href="/src/assets/As'ad Mahmud Akram_Portofolio.pdf"
+                href="#"
                 download
                 className="bg-black/10 hover:bg-black/20 text-black text-xs sm:text-sm px-3 py-2 rounded-full border border-black/20 hover:scale-[1.02] transition flex items-center gap-2 justify-center min-w-[120px]"
               >
@@ -344,3 +344,4 @@ const Home = () => {
 
 
 export default Home;
+

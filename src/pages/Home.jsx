@@ -162,10 +162,6 @@ const Home = () => {
               <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
               Based in Klaten, Indonesia <span className="text-sm">🇮🇩</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
-              Onsite
-            </div>
           </div>
 
           <div className="text-gray-700 space-y-3 sm:space-y-4 text-sm sm:text-base leading-relaxed">
@@ -344,4 +340,5 @@ const Home = () => {
 
 
 export default Home;
+
 

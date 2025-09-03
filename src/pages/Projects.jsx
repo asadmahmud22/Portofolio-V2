@@ -6,7 +6,7 @@ const projects = [
     title: "Personal Website",
     description:
       "Situs pribadi dan portofolio milik As'ad Mahmud Akram, seorang pengembang web yang berfokus pada frontend development. Dibuat menggunakan React, Tailwind CSS, dan Vite, serta di-deploy melalui Vercel, situs ini menampilkan profil, keahlian, layanan, hingga proyek-proyek yang pernah dikerjakan secara profesional dan modern.",
-    image: "/projects/site.png",
+    image: "/projects/Portofolio-V2.png",
     tech: ["react", "tailwind", "eslint", "vite", "vercel"],
     featured: true,
     link: "https://asadmahmudakram.vercel.app",
@@ -28,6 +28,14 @@ const projects = [
     tech: ["figma"],
     featured: true,
     link: "https://www.figma.com/design/7ceElGN2RimU2X0ekNFn6e/UI-UX-Wireframe-for-Mobile-E-Commerce?node-id=0-1&t=4RZxXMDp6kqbzDfw-1",
+  },
+  {
+    title: "Personal Website",
+    description:
+      "Situs pribadi dan portofolio milik As'ad Mahmud Akram, seorang pengembang web yang berfokus pada frontend development. Dibuat menggunakan React, Tailwind CSS, dan Vite, serta di-deploy melalui Vercel, situs ini menampilkan profil, keahlian, layanan, hingga proyek-proyek yang pernah dikerjakan secara profesional dan modern.",
+    image: "/projects/site.png",
+    tech: ["react", "tailwind", "eslint", "vite", "vercel"],
+    link: "https://portofolio-asad-mahmud-akram.vercel.app/",
   },
   {
     title: "SiDompet - Aplikasi Pengelolaan Keuangan SiDompet",
@@ -88,7 +96,8 @@ const Projects = () => {
     <div className="bg-white text-black py-10">
       <h1 className="text-3xl font-bold mb-6 text-center">Projects</h1>
       <p className="text-gray-700 mb-6 text-center">
-        Beberapa proyek yang telah saya kerjakan, baik proyek swasta maupun proyek sumber terbuka.
+        Beberapa proyek yang telah saya kerjakan, baik proyek swasta maupun
+        proyek sumber terbuka.
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">

@@ -170,10 +170,7 @@ const Home = () => {
 
           <div className="text-gray-700 space-y-3 sm:space-y-4 text-sm sm:text-base leading-relaxed">
             <p>
-              Passionate and seasoned Software Engineer with a strong focus on frontend
-              development. Proficient in TypeScript and well-versed in all aspects of web
-              technologies. Collaborative team player dedicated to delivering efficient, scalable,
-              and visually appealing web applications.
+              Saya adalah mahasiswa Teknologi Komputer di Universitas Teknologi Digital Indonesia angkatan 2023. Sebagai seorang pengembang perangkat lunak yang antusias, saya memiliki fokus utama pada pengembangan frontend dengan pengalaman menggunakan React serta pemahaman berbagai teknologi web. Selain itu, saya juga memiliki ketertarikan dan pengalaman dalam desain UI/UX, dengan tujuan menciptakan antarmuka yang fungsional sekaligus menarik secara visual.
             </p>
           </div>
         </div>
@@ -344,5 +341,6 @@ const Home = () => {
     </div>
   );
 };
+
 
 export default Home;

@@ -118,9 +118,9 @@ const Skills = () => {
               {
                 year: "2023 - Present",
                 role: "Junior Web Developer",
-                company: "StartUp Ventures",
+                company: "None",
                 description:
-                  "Built responsive websites and collaborated with designers to implement UI/UX best practices.",
+                  "None",
               },
             ].map((item, index) => (
               <div key={index} className="relative pl-8 border-l-2 border-green-500">
@@ -141,4 +141,5 @@ const Skills = () => {
 };
 
 export default Skills;
+
 

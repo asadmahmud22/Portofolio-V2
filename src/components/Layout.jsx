@@ -175,7 +175,7 @@ const SidebarContent = ({ toggleLanguage, language }) => {
           { to: "/skills", label: "Skills", icon: Code },
           { to: "/achievements", label: "Achievements", icon: Award },
           { to: "/projects", label: "Projects", icon: Briefcase },
-          { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+         
           { to: "/contact", label: "Contact", icon: Mail },
         ].map(({ to, label, icon: Icon }) => (
           <NavLink
@@ -212,6 +212,7 @@ const SidebarContent = ({ toggleLanguage, language }) => {
 
 
 export default Layout;
+
 
 
 

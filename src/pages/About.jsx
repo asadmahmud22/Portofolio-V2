@@ -76,20 +76,7 @@ const About = () => {
         "Memastikan data terunggah akurat untuk percepatan rekapitulasi dan transparansi hasil pemilu.",
       ],
     },
-    {
-      title: "Part Time Operator Sortir Paket",
-      company: "Distribution Center Solo (Shopee Express)",
-      location: "Solo, Indonesia",
-      period: "Aug 2024 - Oct 2024",
-      type: "Part-time",
-      mode: "Onsite",
-      logo: "/assets/shopee-logo.png",
-      responsibilities: [
-        "Mengelompokkan paket berdasarkan kode pengiriman, alamat tujuan, dan metode pengiriman.",
-        "Menyusun paket sesuai rute distribusi untuk memudahkan proses pengantaran.",
-        "Bekerja sama dengan tim lain dalam menjaga alur distribusi agar tetap efisien dan tepat waktu.",
-      ],
-    },
+    
     {
       title: "Asisten Teknisi Jaringan - Praktik Kerja Lapangan",
       company: "Diskominfo Kabupaten Klaten",
@@ -284,5 +271,6 @@ const About = () => {
 };
 
 export default About;
+
 
 

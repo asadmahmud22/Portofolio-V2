@@ -46,6 +46,14 @@ const projects = [
     tech: ["react", "tailwind", "eslint", "vite", "vercel"],
     link: "https://portofolio-asad-mahmud-akram.vercel.app/",
   },
+  {
+    title: "Website Himpunan Mahasiswa Teknologi Komputer",
+    description:
+      "Website Himpunan Mahasiswa Teknologi Komputer. Dibuat menggunakan html, CSS, dan js, serta di-deploy melalui Server Kampus Universitas Teknologi Digital Indonesia, situs ini menampilkan profil Himpunan Mahasiswa Teknologi Komputer, Struktur kepengurusan organisas, Dokumentasi kegiatan, layanan, hingga proyek-proyek yang pernah dikerjakan.",
+    image: "/projects/web-himatekkom.png",
+    tech: ["html", "css", "js"],
+    link: "https://himatekkom.utdi.ac.id/",
+  },
 
   {
     title: "Website MyLinksPage",
@@ -213,3 +221,4 @@ const Projects = () => {
 };
 
 export default Projects;
+

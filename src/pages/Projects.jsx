@@ -30,6 +30,14 @@ const projects = [
     link: "#",
   },
   {
+    title: "Website Himpunan Mahasiswa Teknologi Komputer",
+    description:
+      "Website Himpunan Mahasiswa Teknologi Komputer. Dibuat menggunakan html, CSS, dan js, serta di-deploy melalui Server Kampus Universitas Teknologi Digital Indonesia, situs ini menampilkan profil Himpunan Mahasiswa Teknologi Komputer, Struktur kepengurusan organisas, Dokumentasi kegiatan, layanan, hingga proyek-proyek yang pernah dikerjakan.",
+    image: "/projects/web-himatekkom.png",
+    tech: ["html", "css", "js"],
+    link: "https://himatekkom.utdi.ac.id/",
+  },
+  {
     title: "Design UI/UX APP Store Shoes",
     description:
       "Desain antarmuka pengguna (UI/UX) aplikasi mobile Shoes Store ini dibuat menggunakan Figma dan menggambarkan alur e-commerce lengkap mulai dari pendaftaran akun, pencarian produk, detail produk, proses checkout, hingga komunikasi langsung dengan penjual.",
@@ -46,15 +54,7 @@ const projects = [
     tech: ["react", "tailwind", "eslint", "vite", "vercel"],
     link: "https://portofolio-asad-mahmud-akram.vercel.app/",
   },
-  {
-    title: "Website Himpunan Mahasiswa Teknologi Komputer",
-    description:
-      "Website Himpunan Mahasiswa Teknologi Komputer. Dibuat menggunakan html, CSS, dan js, serta di-deploy melalui Server Kampus Universitas Teknologi Digital Indonesia, situs ini menampilkan profil Himpunan Mahasiswa Teknologi Komputer, Struktur kepengurusan organisas, Dokumentasi kegiatan, layanan, hingga proyek-proyek yang pernah dikerjakan.",
-    image: "/projects/web-himatekkom.png",
-    tech: ["html", "css", "js"],
-    link: "https://himatekkom.utdi.ac.id/",
-  },
-
+  
   {
     title: "Website MyLinksPage",
     description:
@@ -221,4 +221,5 @@ const Projects = () => {
 };
 
 export default Projects;
+
 

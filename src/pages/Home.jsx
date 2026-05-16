@@ -3,12 +3,13 @@ import { useEffect, useState } from "react";
 import { GiH2O } from "react-icons/gi";
 
 const skills = [
-  { name: "Html", color: "border-orange-500", logo: "/logos/html.svg" },
+  { name: "HTML", color: "border-orange-500", logo: "/logos/html.svg" },
   { name: "JavaScript", color: "border-yellow-500", logo: "/logos/js.svg" },
-  { name: "PHP", color: "border-blue-600", logo: "/logos/php.svg" },
-  { name: "sqlite", color: "border-red-600", logo: "/logos/sqlite.svg" },
-  { name: "Next.js", color: "border-green-500", logo: "/logos/nextjs.svg" },
-  { name: "Vite", color: "border-purple-900", logo: "/logos/vite.svg" },
+  { name: "PHP", color: "border-indigo-500", logo: "/logos/php.svg" },
+  { name: "Laravel", color: "border-red-500", logo: "/logos/laravel.svg" },
+  { name: "SQLite", color: "border-blue-400", logo: "/logos/sqlite.svg" },
+  { name: "Next.js", color: "border-gray-800", logo: "/logos/nextjs.svg" },
+  { name: "Vite", color: "border-purple-500", logo: "/logos/vite.svg" },
   { name: "GitHub", color: "border-gray-800", logo: "/logos/github.svg" },
   { name: "Kotlin", color: "border-purple-700", logo: "/logos/kotlin.svg" },
   {
@@ -165,10 +166,9 @@ const Home = () => {
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-3 sm:mb-4 leading-tight">
             FULLSTACK DEVELOPER
           </h1>
-        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-3 sm:mb-4 leading-tight">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-3 sm:mb-4 leading-tight">
             Hi, I'm As'ad Mahmud Akram
           </h2>
-          
 
           <div className="flex flex-col gap-1 sm:gap-2 text-gray-600 mb-4 sm:mb-6 text-sm">
             <div className="flex items-center gap-2">

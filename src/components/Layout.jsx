@@ -152,7 +152,9 @@ const SidebarContent = ({ toggleLanguage, language }) => {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent"></div>
         </div>
-
+        <h2 className="text-lg font-bold text-gray-800 mb-0.5 text-center leading-tight">
+          As'ad Mahmud Akram
+        </h2>
         <h2 className="text-lg font-bold text-gray-800 mb-0.5 text-center leading-tight">
           Frontend Developer
         </h2>

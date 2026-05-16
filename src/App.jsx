@@ -9,7 +9,7 @@ import Projects from "./pages/Projects";
 import Contact from "./pages/Contact";
 import Chat from "./pages/Chat";
 import Skills from "./pages/Skills";
-import Dashboard from "./pages/Dashboard";
+
 import "./App.css";
 
 function NotFound() {

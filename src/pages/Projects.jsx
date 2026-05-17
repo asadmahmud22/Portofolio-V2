@@ -1,85 +1,7 @@
-import React from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BadgeCheck, Link as LinkIcon, X } from "lucide-react";
-const projects = [
-  {
-    title: "Personal Website",
-    description:
-      "Situs pribadi dan portofolio milik As'ad Mahmud Akram, seorang pengembang web yang berfokus pada frontend development. Dibuat menggunakan React, Tailwind CSS, dan Vite, serta di-deploy melalui Vercel, situs ini menampilkan profil, keahlian, layanan, hingga proyek-proyek yang pernah dikerjakan secara profesional dan modern.",
-    image: "/projects/Portofolio-V2.png",
-    tech: ["react", "tailwind", "eslint", "vite", "vercel"],
-    featured: true,
-    link: "https://asadmahmudakram.vercel.app",
-  },
-  {
-    title: "Online Exam Siswa",
-    description:
-      "Aplikasi Online Exam Siswa adalah sistem ujian berbasis web yang memungkinkan siswa untuk login dan mengikuti ujian secara online dengan aman dan efisien. Dibangun menggunakan HTML, CSS, JavaScript, PHP, dan MySQL, aplikasi ini mendukung proses autentikasi pengguna, manajemen soal, dan penyimpanan hasil ujian.",
-    image: "/projects/online-exam.png",
-    tech: ["html", "css", "js", "php", "mysql", "infinity"],
-    featured: true,
-    link: "https://asadmahmud.42web.io/index.php",
-  },
-  {
-    title: "SiDompet - Aplikasi Pengelolaan Keuangan SiDompet",
-    description:
-      "SiDompet adalah aplikasi mobile sederhana untuk mencatat dan mengelola pemasukan serta pengeluaran harian pengguna. Dibangun menggunakan Kotlin dengan database SQLite, aplikasi ini dirancang untuk membantu pengguna dalam merencanakan dan memantau kondisi keuangan pribadi secara efisien.",
-    image: "/projects/app-SiDompet.png",
-    tech: ["kotlin", "sqlite"],
-    featured: true,
-    link: "#",
-  },
-  {
-    title: "Design UI/UX APP Store Shoes",
-    description:
-      "Desain antarmuka pengguna (UI/UX) aplikasi mobile Shoes Store ini dibuat menggunakan Figma dan menggambarkan alur e-commerce lengkap mulai dari pendaftaran akun, pencarian produk, detail produk, proses checkout, hingga komunikasi langsung dengan penjual.",
-    image: "/projects/app-shoes.png",
-    tech: ["figma"],
-
-    link: "https://www.figma.com/design/7ceElGN2RimU2X0ekNFn6e/UI-UX-Wireframe-for-Mobile-E-Commerce?node-id=0-1&t=4RZxXMDp6kqbzDfw-1",
-  },
-  {
-    title: "Personal Website",
-    description:
-      "Situs pribadi dan portofolio milik As'ad Mahmud Akram, seorang pengembang web yang berfokus pada frontend development. Dibuat menggunakan React, Tailwind CSS, dan Vite, serta di-deploy melalui Vercel, situs ini menampilkan profil, keahlian, layanan, hingga proyek-proyek yang pernah dikerjakan secara profesional dan modern.",
-    image: "/projects/site.png",
-    tech: ["react", "tailwind", "eslint", "vite", "vercel"],
-    link: "https://portofolio-asad-mahmud-akram.vercel.app/",
-  },
-
-  {
-    title: "Website MyLinksPage",
-    description:
-      "Website sederhana yang menampilkan tautan pribadi pengguna dalam satu halaman, menyerupai layanan Linktree. Dibuat menggunakan HTML, CSS, dan JavaScript, website ini cocok untuk menampilkan semua akun media sosial atau portofolio secara ringkas dan mudah diakses.",
-    image: "/projects/my-link.png",
-    tech: ["html", "css", "js", "vercel"],
-    link: "https://my-link-lemon.vercel.app/",
-  },
-  {
-    title: "Website tampilan Katalog Kopi",
-    description:
-      "Sebuah website katalog sederhana bertema kopi, menampilkan berbagai jenis produk kopi beserta deskripsi singkatnya. Dibangun menggunakan HTML dan CSS, tampilan website ini dirancang untuk menarik minat pengunjung dengan desain minimalis dan modern.",
-    image: "/projects/kopi-senja.png",
-    tech: ["html", "css", "vercel"],
-    link: "https://kopisenja-rouge.vercel.app/",
-  },
-  {
-    title: "Website tampilan Kuliner Khas Jogja",
-    description:
-      "Website informatif yang menampilkan beragam kuliner khas Yogyakarta. Dibuat menggunakan HTML dan CSS, proyek ini bertujuan untuk memperkenalkan makanan tradisional Jogja dengan visual menarik dan layout sederhana.",
-    image: "/projects/kuliner-khas-jogja.png",
-    tech: ["html", "css", "vercel"],
-    link: "https://kuliner-jogja-rho.vercel.app/",
-  },
-  {
-    title: "Personal Website",
-    description:
-      "Situs pribadi dan portofolio milik As'ad Mahmud Akram, seorang pengembang web yang berfokus pada frontend development. Dibuat menggunakan Html, CSS, dan Javascript, serta di-deploy melalui Vercel, situs ini menampilkan profil, keahlian, layanan, hingga proyek-proyek yang pernah dikerjakan secara profesional dan modern.",
-    image: "/projects/Portofolio.png",
-    tech: ["html", "css", "js", "vercel"],
-    link: "https://portofolio-asad.vercel.app/",
-  },
-];
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebase";
 
 const techIcons = {
   html: "/icons/html.svg",
@@ -99,111 +21,151 @@ const techIcons = {
   kotlin: "/icons/kotlin.svg",
   figma: "/icons/figma.svg",
   sqlite: "/icons/sqlite.svg",
+  firebase: "/icons/firebase.svg",
+  laravel: "/icons/laravel.svg",
+  python: "/icons/python.svg",
+  nodejs: "/icons/nodejs.svg",
+  mongodb: "/icons/mongodb.svg",
 };
 
 const Projects = () => {
+  const [projects, setProjects] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [modal, setModal] = useState(null);
 
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const snapshot = await getDocs(collection(db, "projects"));
+        const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        data.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+        setProjects(data);
+      } catch (err) {
+        console.error("Gagal mengambil data projects:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchProjects();
+  }, []);
+
   return (
-    <div className="bg-white text-black py-10">
-      <h1 className="text-3xl font-bold mb-6 text-center">Projects</h1>
-      <p className="text-gray-700 mb-6 text-center">
-        Beberapa proyek yang telah saya kerjakan, baik proyek swasta maupun
-        proyek sumber terbuka.
-      </p>
+    <div className="max-w-6xl mx-auto px-4 text-black bg-white">
+      {/* Header */}
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold mb-2">Projects</h1>
+        <p className="text-stone-500 text-sm max-w-lg leading-relaxed">
+          Beberapa proyek yang telah saya kerjakan, baik proyek swasta maupun proyek sumber terbuka.
+        </p>
+        <div className="border-t border-gray-300 my-4" />
+      </div>
+
+      {/* Loading */}
+      {isLoading && (
+        <div className="flex justify-center items-center py-20">
+          <div className="w-8 h-8 border-4 border-gray-300 border-t-gray-900 rounded-full animate-spin" />
+        </div>
+      )}
+
+      {/* Empty */}
+      {!isLoading && projects.length === 0 && (
+        <p className="text-center text-gray-500 mt-10">
+          Belum ada project yang ditambahkan.
+        </p>
+      )}
 
       {/* Grid Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
-        {projects.map((project, idx) => (
-          <div
-            key={idx}
-            onClick={() => setModal(project)}
-            className="relative bg-black/20 backdrop-blur-md p-4 rounded-lg shadow-xl shadow-black border border-black/10 hover:scale-[1.02] transition cursor-pointer"
-          >
-            <img
-              src={project.image}
-              alt={project.title}
-              className="w-full h-45 object-cover rounded-md mb-3"
-            />
+      {!isLoading && projects.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {projects.map((project) => (
+            <div
+              key={project.id}
+              onClick={() => setModal(project)}
+              className="relative bg-black/20 backdrop-blur-md p-4 rounded-lg shadow-xl shadow-black border border-black/10 hover:scale-[1.02] transition cursor-pointer"
+            >
+              {project.img ? (
+                <img src={project.img} alt={project.title} className="w-full h-45 object-cover rounded-md mb-3" />
+              ) : (
+                <div className="w-full h-45 bg-gray-100 rounded-md mb-3 flex items-center justify-center text-gray-300 text-sm">
+                  No Image
+                </div>
+              )}
 
-            {project.featured && (
-              <div className="absolute top-2 right-2 bg-blue-600 text-xs px-2 py-1 rounded-full flex items-center gap-1 text-white">
-                <BadgeCheck size={12} />
-                Featured
-              </div>
-            )}
+              {project.featured && (
+                <div className="absolute top-2 right-2 bg-blue-600 text-xs px-2 py-1 rounded-full flex items-center gap-1 text-white">
+                  <BadgeCheck size={12} /> Featured
+                </div>
+              )}
 
-            <h3 className="text-md font-semibold">{project.title}</h3>
-            <p className="text-sm text-gray-800 mt-1 line-clamp-3">
-              {project.description}
-            </p>
+              <h3 className="text-md font-semibold">{project.title}</h3>
+              <p className="text-sm text-gray-800 mt-1 line-clamp-3">{project.description}</p>
 
-            <div className="flex flex-wrap gap-2 mt-3">
-              {project.tech.map((tech, index) => (
-                <img
-                  key={index}
-                  src={techIcons[tech]}
-                  alt={tech}
-                  title={tech}
-                  className="w-5 h-5"
-                />
-              ))}
+              {project.tech?.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {project.tech.map((tech, index) =>
+                    techIcons[tech.toLowerCase()] ? (
+                      <img key={index} src={techIcons[tech.toLowerCase()]} alt={tech} title={tech} className="w-5 h-5" />
+                    ) : (
+                      <span key={index} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{tech}</span>
+                    )
+                  )}
+                </div>
+              )}
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Modal */}
       {modal && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 backdrop-blur-sm"
-          onClick={() => setModal(null)}
-        >
-          <div
-            className="relative max-w-3xl w-full mx-4 bg-white rounded-lg overflow-hidden shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Tombol close */}
-            <button
-              className="absolute top-2 right-2 text-black hover:text-red-500"
-              onClick={() => setModal(null)}
-            >
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 backdrop-blur-sm" onClick={() => setModal(null)}>
+          <div className="relative max-w-3xl w-full mx-4 bg-white rounded-lg overflow-hidden shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <button className="absolute top-2 right-2 text-black hover:text-red-500 z-10" onClick={() => setModal(null)}>
               <X size={24} />
             </button>
 
-            <img
-              src={modal.image}
-              alt={modal.title}
-              className="w-full object-contain max-h-[70vh]"
-            />
+            {modal.img && <img src={modal.img} alt={modal.title} className="w-full object-contain max-h-[70vh]" />}
 
             <div className="p-4 text-black">
-              <h3 className="text-xl font-semibold">{modal.title}</h3>
-              <p className="text-sm mt-2">{modal.description}</p>
-
-              <div className="flex flex-wrap gap-2 mt-3">
-                {modal.tech.map((tech, index) => (
-                  <img
-                    key={index}
-                    src={techIcons[tech]}
-                    alt={tech}
-                    title={tech}
-                    className="w-6 h-6"
-                  />
-                ))}
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="text-xl font-semibold">{modal.title}</h3>
+                {modal.featured && (
+                  <span className="bg-blue-600 text-white text-xs px-2 py-0.5 rounded-full flex items-center gap-1">
+                    <BadgeCheck size={11} /> Featured
+                  </span>
+                )}
               </div>
 
-              {modal.link && modal.link !== "#" && (
-                <a
-                  href={modal.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 mt-3 text-sm text-blue-600 hover:underline"
-                >
-                  <LinkIcon size={14} />
-                  Visit Project
-                </a>
+              {modal.category && (
+                <span className="inline-block text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full mb-2">{modal.category}</span>
               )}
+
+              <p className="text-sm mt-1 text-gray-700 leading-relaxed">{modal.description}</p>
+
+              {modal.tech?.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {modal.tech.map((tech, index) =>
+                    techIcons[tech.toLowerCase()] ? (
+                      <img key={index} src={techIcons[tech.toLowerCase()]} alt={tech} title={tech} className="w-6 h-6" />
+                    ) : (
+                      <span key={index} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{tech}</span>
+                    )
+                  )}
+                </div>
+              )}
+
+              <div className="flex gap-4 mt-3">
+                {modal.liveUrl && (
+                  <a href={modal.liveUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm text-blue-600 hover:underline">
+                    <LinkIcon size={14} /> Visit Project
+                  </a>
+                )}
+                {modal.githubUrl && (
+                  <a href={modal.githubUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm text-gray-700 hover:underline">
+                    <LinkIcon size={14} /> GitHub
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         </div>

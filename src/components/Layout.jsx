@@ -156,7 +156,7 @@ const SidebarContent = ({ toggleLanguage, language }) => {
           As'ad Mahmud Akram
         </h2>
         <h2 className="text-lg font-bold text-gray-800 mb-0.5 text-center leading-tight">
-          Frontend Developer
+          Fullstack Developer
         </h2>
         <div className="text-gray-500 text-xs mb-3">@asadmahmudakram</div>
 

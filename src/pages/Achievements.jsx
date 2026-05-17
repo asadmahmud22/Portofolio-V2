@@ -1,385 +1,243 @@
-import { useState } from "react";
-import { Search, Filter, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Search, X, Trophy, ExternalLink, ChevronDown } from "lucide-react";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebase";
 
-const achievements = [
-  {
-    id: 1,
-    title: "Belajar Dasar Pemrograman Javascript",
-    org: "Dicoding Indonesia",
-    date: "May 19, 2025 - May 19 2028",
-    img: "/certs/dicoding-dasar-javascript.jpg",
-    link: "https://www.dicoding.com/certificates/1RXYE8RLQZVM",
-    category: "bootcamp",
-  },
-  {
-    id: 2,
-    title: "Belajar Dasar Pemrograman Web",
-    org: "Dicoding Indonesia",
-    date: "January 2025",
-    img: "/certs/dicoding-dasar-web.jpg",
-    link: "https://www.dicoding.com/certificates/L4PQE4064PO1",
-    category: "bootcamp",
-  },
-  {
-    id: 3,
-    title: "Belajar Dasar Pemrograman dengan Java",
-    org: "Dicoding Indonesia",
-    date: "May 2025",
-    img: "/certs/dicocing-dasar-java.jpg",
-    link: "https://www.dicoding.com/certificates/1RXYE8TRQZVM",
-    category: "bootcamp",
-  },
-  {
-    id: 4,
-    title: "Belajar Dasar Cloud dan Gen AI di AWS",
-    org: "Dicoding Indonesia",
-    date: "May 2025",
-    img: "/certs/dicoding-cloud-aws.png",
-    link: "https://www.dicoding.com/certificates/JMZVE70MRPN9",
-    category: "bootcamp",
-  },
-  {
-    id: 5,
-    title: "CCNA: Introduction to Networks course",
-    org: "Cisco Networking Academy",
-    date: "19 Desember 2024",
-    img: "/certs/ccna-introduction-networks.jpg",
-    link: "https://www.credly.com/badges/58e0d233-ad2a-4557-89da-718c50c48373/public_url",
-    category: "bootcamp",
-  },
-  {
-    id: 6,
-    title: "Introduction to UX Research",
-    org: "MySkill Short Class",
-    date: "July 2025",
-    img: "/certs/MySkill-Introduction-to-UX-Research.png",
-    link: "",
-    category: "bootcamp",
-  },
-  {
-    id: 7,
-    title: "Wireframing in UI/UX Design",
-    org: "MySkill Short Class",
-    date: "May 2025",
-    img: "/certs/myskill-uiux-wireframing.jpg",
-    link: "",
-    category: "bootcamp",
-  },
-  {
-    id: 8,
-    title: "Data Visualization with Looker Data Studio",
-    org: "MySkill Short Class",
-    date: "May 2025",
-    img: "/certs/MySkill-Data-Visualization-with-Looker-Data-Studio.png",
-    link: "",
-    category: "bootcamp",
-  },
-  {
-    id: 9,
-    title: "Website Development: Front End",
-    org: "MySkill Short Class",
-    date: "June 17, 2025",
-    img: "/certs/MySkill-Website-Development-Frontend.png",
-    link: "",
-    category: "bootcamp",
-  },
-  {
-    id: 10,
-    title: "Guide to Learn SQL with AI at DQLab",
-    org: "DQLab (berkolaborasi dengan Xeratic dan Universitas Multimedia Nusantara)",
-    date: "05 Mei 2025",
-    img: "/certs/dqlab-sql-ai.jpg",
-    link: "",
-    category: "bootcamp",
-  },
-  {
-    id: 11,
-    title:
-      "Juara 2 Lomba Desain Poster bertema Keselamatan dan Kesehatan Kerja (K3)",
-    org: "STIKES Mitra Husada Karanganyar",
-    date: "February 2025",
-    img: "/certs/penghargaan-juara2-desain-poster-k3.png",
-    link: "",
-    category: "competition",
-  },
-  {
-    id: 12,
-    title:
-      "Peserta Lomba desain poster dengan tema “Keselamatan dan Kesehatan Kerja",
-    org: "Himpunan Mahasiswa Program Studi Keselamatan dan Kesehatan Kerja (K3), STIKES Mitra Husada Karanganyar",
-    date: "February 2025",
-    img: "/certs/peserta-kompetisi-desain-poster.jpg",
-    link: "",
-    category: "competition",
-  },
-  {
-    id: 13,
-    title: "Participant Infographic Poster, 4C National Competition 2024",
-    org: " Universitas Brawijaya",
-    date: "December 2025",
-    img: "/certs/peserta-4C-2024-bidang-poster-infografis.jpg",
-    link: "",
-    category: "competition",
-  },
-  {
-    id: 14,
-    title: "Sertifikat Praktek Kerja Lapangan",
-    org: "Dinas Komunikasi dan Informatika Kabupaten Klaten",
-    date: "20 Juni 2022 – 24 September 2022",
-    img: "/certs/pkl-diskominfo-klaten.jpg",
-    link: "",
-    category: "intern",
-  },
-  {
-    id: 23,
-    title: "Sertifikat Penghargaan Bidang Humas dan Keanggotaan",
-    org: "Himpunan Mahasiswa Jurusan Teknologi Komputer (HIMATEKKOM) - Universitas Teknologi Digital Indonesia",
-    date: "01 Agustus 2025",
-    img: "/certs/SertifikatPH-Himatekkom_Asad-Mahmud-Akram.png",
-    link: "",
-    category: "organization",
-  },
-
-  {
-    id: 24,
-    title: "Panitia UNIFEST 2025 - Sie PDD",
-    org: "UNIFEST 2025 - Universitas Teknologi Digital Indonesia",
-    date: "12–13 Juli 2025",
-    img: "/certs/Sertifikat-Panitia-Unifest-2025.png",
-    link: "",
-    category: "organization",
-  },
-
-  {
-    id: 15,
-    title:
-      "Sertifikat Panitia Kegiatan Goes to School #6 (Introduction and Basic Training on Arduino Microcontrollers) ",
-    org: "Himpunan Mahasiswa Teknologi Komputer - Universitas Teknologi Digital Indonesia",
-    date: "20 Mei 2024",
-    img: "/certs/panitia-gts6.jpg",
-    link: "",
-    category: "organization",
-  },
-  {
-    id: 16,
-    title:
-      "Sertifikat Panitia Kegiatan Goes to School #7 (Let's Learn Future Technology with IoT) ",
-    org: "Himpunan Mahasiswa Teknologi Komputer - Universitas Teknologi Digital Indonesia",
-    date: "20 Februari 2025",
-    img: "/certs/panitia-gts7.png",
-    link: "",
-    category: "organization",
-  },
-  {
-    id: 17,
-    title:
-      "Peserta Seminar Keamanan Siber di Era Digital Peluang dan Tantangan",
-    org: "CyberHub - In Universitas Teknologi Digital Indonesia",
-    date: "Yogyakarta, 23 Maret 2024",
-    img: "/certs/seminar-keamanan-siber-diera-digital-peluangdantantangan.png",
-    link: "",
-    category: "webinar and seminar",
-  },
-  {
-    id: 18,
-    title: "Peserta Seminar Peluang dan Resiko Keuangan Digital",
-    org: "Universitas Teknologi Digital Indonesia",
-    date: "Yogyakarta, 25 may 2025",
-    img: "/certs/seminar-peluang-dan-resiko-keuangan-digital.png",
-    link: "",
-    category: "webinar and seminar",
-  },
-  {
-    id: 19,
-    title:
-      "Peserta Webinar How to Build a Strong Personal Branding on Linkedln",
-    org: "TalentaHub - Indonesia",
-    date: "Yogyakarta, 15 Maret 2025",
-    img: "/certs/webinar-how-to-build-a-strong-personal-branding-on-linkedln.jpg",
-    link: "",
-    category: "webinar and seminar",
-  },
-  {
-    id: 20,
-    title: "Webinar Nasional Inovasi Smart City Berbasis IoT",
-    org: "Program Studi S1 Teknik Informatika Universitas Sains",
-    date: "25 September 2024",
-    img: "/certs/webinar-inovasi-smart-city-berbasis-iot.png",
-    link: "",
-    category: "webinar and seminar",
-  },
-  {
-    id: 21,
-    title: "Soft Skill Webinar 5 Project Management",
-    org: "DBS Foundation Coding Camp 2024",
-    date: "Bandung, 12 Juni 2024",
-    img: "/certs/soft-skill-webinar-5-project-management-dbs-foundation-coding.png",
-    link: "",
-    category: "webinar and seminar",
-  },
-  {
-    id: 22,
-    title: "Soft Skill Webinar 7 Effective Communication",
-    org: "DBS Foundation Coding Camp 2024",
-    date: "Bandung, 26 Juni 2024",
-    img: "/certs/soft-skill-webinar-7-effective-communication-dbs-foundation-coding-camp.png",
-    link: "",
-    category: "webinar and seminar",
-  },
-
-  // Tambahkan item lain seperti di gambar...
+const CATEGORIES = [
+  "all",
+  "achievement",
+  "competition",
+  "bootcamp",
+  "organization",
+  "webinar and seminar",
+  "intern",
 ];
 
+const CATEGORY_COLORS = {
+  achievement: "bg-amber-50 text-amber-700 border border-amber-200",
+  competition: "bg-rose-50 text-rose-700 border border-rose-200",
+  bootcamp: "bg-violet-50 text-violet-700 border border-violet-200",
+  organization: "bg-sky-50 text-sky-700 border border-sky-200",
+  "webinar and seminar": "bg-teal-50 text-teal-700 border border-teal-200",
+  intern: "bg-orange-50 text-orange-700 border border-orange-200",
+};
+
 const Achievements = () => {
+  const [achievements, setAchievements] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
   const [open, setOpen] = useState(false);
   const [modal, setModal] = useState(null);
 
-  const filteredAchievements = achievements.filter(
-    (ach) =>
-      (filter === "all" ? true : ach.category === filter) &&
-      ach.title.toLowerCase().includes(search.toLowerCase())
+  useEffect(() => {
+    const fetchAchievements = async () => {
+      try {
+        const snapshot = await getDocs(collection(db, "achievements"));
+        const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        data.sort((a, b) => (b.date > a.date ? 1 : -1));
+        setAchievements(data);
+      } catch (err) {
+        console.error("Gagal mengambil data achievements:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchAchievements();
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = () => setOpen(false);
+    window.addEventListener("click", handler);
+    return () => window.removeEventListener("click", handler);
+  }, [open]);
+
+  const filtered = achievements.filter(
+    (a) =>
+      (filter === "all" || a.category === filter) &&
+      a.title?.toLowerCase().includes(search.toLowerCase())
   );
 
-  return (
-    <div className="max-w-6xl mx-auto bg-white text-black relative z-0 min-h-screen p-4">
-      <h1 className="text-3xl font-bold mb-4 text-center">Achievements</h1>
-      <p className="mb-6 text-gray-600 text-center">
-        Koleksi sertifikat dan lencana yang telah saya peroleh sepanjang
-        perjalanan saya.
-      </p>
+  const activeLabel =
+    filter === "all" ? "Semua Kategori" : filter.charAt(0).toUpperCase() + filter.slice(1);
 
-      {/* Filter & Search */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-        {/* Dropdown Filter */}
-        <div className="relative inline-block text-left w-full md:w-64">
-          <button
-            onClick={() => setOpen((prev) => !prev)}
-            className="inline-flex justify-between w-full rounded-md border border-gray-300 shadow px-4 py-2 bg-black/70 text-white text-sm font-medium hover:bg-black/80 focus:outline-none"
-          >
-            {filter.charAt(0).toUpperCase() + filter.slice(1)}
-            <svg
-              className="-mr-1 ml-2 h-5 w-5"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+  return (
+    <div className="max-w-6xl mx-auto px-4 text-black bg-white">
+      {/* Header */}
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold mb-2">Achievements</h1>
+        <p className="text-stone-500 text-sm max-w-lg leading-relaxed">
+          Koleksi sertifikat dan pencapaian yang telah diraih sepanjang perjalanan belajar dan berkarya.
+        </p>
+        <div className="border-t border-gray-300 my-4" />
+      </div>
+
+      {/* Stats row */}
+      <div className="flex flex-wrap items-center gap-4 mb-6">
+        {CATEGORIES.filter((c) => c !== "all").map((cat) => {
+          const count = achievements.filter((a) => a.category === cat).length;
+          if (count === 0) return null;
+          return (
+            <button
+              key={cat}
+              onClick={() => setFilter(filter === cat ? "all" : cat)}
+              className={`flex items-center gap-1.5 text-xs transition-all ${filter === cat ? "opacity-100" : "opacity-50 hover:opacity-80"}`}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
+              <span className={`px-2 py-0.5 rounded-full font-medium border ${CATEGORY_COLORS[cat] || "bg-stone-100 text-stone-600 border-stone-200"}`}>
+                {cat}
+              </span>
+              <span className="text-stone-400 font-mono">{count}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Toolbar */}
+      <div className="flex items-center gap-3 mb-6">
+        {/* Search */}
+        <div className="relative flex-1">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Cari judul sertifikat..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-9 pr-4 py-2 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-800 focus:border-transparent shadow-sm transition"
+          />
+          {search && (
+            <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600">
+              <X size={13} />
+            </button>
+          )}
+        </div>
+
+        {/* Category dropdown */}
+        <div className="relative shrink-0" onClick={(e) => e.stopPropagation()}>
+          <button
+            onClick={() => setOpen((p) => !p)}
+            className="flex items-center gap-2 bg-white border border-stone-200 rounded-lg px-4 py-2 text-sm text-stone-700 shadow-sm hover:border-stone-300 transition"
+          >
+            <span>{activeLabel}</span>
+            <ChevronDown size={13} className={`text-stone-400 transition-transform ${open ? "rotate-180" : ""}`} />
           </button>
 
           {open && (
-            <div className="origin-top-left absolute left-0 mt-2 w-full rounded-md shadow-lg bg-black/90 ring-1 ring-black ring-opacity-5 z-10">
-              <div className="py-1 text-white">
-                {[
-                  "all",
-                  "intern",
-                  "bootcamp",
-                  "competition",
-                  "organization",
-                  "webinar and seminar",
-                ].map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => {
-                      setFilter(cat);
-                      setOpen(false);
-                    }}
-                    className="block w-full text-left px-4 py-2 text-sm hover:bg-black/70"
-                  >
-                    {cat.charAt(0).toUpperCase() + cat.slice(1)}
-                  </button>
-                ))}
-              </div>
+            <div className="absolute right-0 mt-1.5 w-52 bg-white rounded-xl shadow-lg border border-stone-100 z-20 overflow-hidden py-1">
+              {CATEGORIES.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => { setFilter(cat); setOpen(false); }}
+                  className={`w-full text-left px-4 py-2 text-sm flex items-center justify-between transition-colors ${filter === cat ? "bg-stone-900 text-white" : "text-stone-700 hover:bg-stone-50"}`}
+                >
+                  <span className="capitalize">{cat === "all" ? "Semua Kategori" : cat}</span>
+                  {cat !== "all" && (
+                    <span className={`text-xs tabular-nums ${filter === cat ? "text-stone-300" : "text-stone-400"}`}>
+                      {achievements.filter((a) => a.category === cat).length}
+                    </span>
+                  )}
+                </button>
+              ))}
             </div>
           )}
         </div>
 
-        {/* Search */}
-        <div className="relative w-full md:flex-1">
-          <input
-            type="text"
-            placeholder="Cari berdasarkan judul sertifikat..."
-            className="w-full px-4 py-2 pl-10 rounded-lg border border-gray-300 text-black focus:outline-none focus:ring-2 focus:ring-black/30"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <Search className="absolute left-3 top-2.5 w-5 h-5 text-gray-500" />
+        <span className="text-xs text-stone-400 shrink-0">{filtered.length} hasil</span>
+      </div>
+
+      {/* Loading */}
+      {isLoading && (
+        <div className="flex justify-center items-center py-24">
+          <div className="w-7 h-7 border-4 border-stone-200 border-t-stone-800 rounded-full animate-spin" />
         </div>
-      </div>
+      )}
 
-      {/* Grid Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {filteredAchievements.map((ach) => (
-          <div
-            key={ach.id}
-            onClick={() => setModal(ach)}
-            className="relative bg-black/20 backdrop-blur-md p-4 rounded-lg shadow-xl shadow-black border border-black/10 hover:scale-[1.02] transition"
-          >
-            <img
-              src={ach.img}
-              alt={ach.title}
-              className="w-full h-46 object-cover"
-            />
-            <div className="p-4 text-black">
-              <h3 className="text-lg font-semibold">{ach.title}</h3>
-              <p className="text-sm">{ach.org}</p>
-              <p className="text-xs text-gray-600">{ach.date}</p>
-              {ach.link && (
-                <a
-                  href={ach.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-1 text-blue-600 text-sm underline inline-block"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  Lihat Sertifikat
-                </a>
-              )}
+      {/* Empty state */}
+      {!isLoading && filtered.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-24 text-stone-400">
+          <Trophy size={36} className="mb-3 opacity-20" />
+          <p className="text-sm">Tidak ada data yang cocok.</p>
+          {(search || filter !== "all") && (
+            <button onClick={() => { setSearch(""); setFilter("all"); }} className="mt-3 text-xs text-stone-500 hover:text-stone-800 underline underline-offset-2 transition">
+              Reset pencarian
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Grid */}
+      {!isLoading && filtered.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-16">
+          {filtered.map((ach) => (
+            <div
+              key={ach.id}
+              onClick={() => setModal(ach)}
+              className="group bg-white rounded-xl border border-stone-200 overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer"
+            >
+              <div className="relative w-full h-44 bg-stone-100 overflow-hidden">
+                {ach.img ? (
+                  <img src={ach.img} alt={ach.title} className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Trophy size={28} className="text-stone-300" />
+                  </div>
+                )}
+                <div className="absolute top-2.5 left-2.5">
+                  <span className={`px-2 py-0.5 rounded-full text-xs font-medium capitalize backdrop-blur-sm ${CATEGORY_COLORS[ach.category] || "bg-stone-100 text-stone-600 border border-stone-200"}`}>
+                    {ach.category}
+                  </span>
+                </div>
+              </div>
+
+              <div className="p-4">
+                <h3 className="font-semibold text-stone-800 text-sm leading-snug line-clamp-2 mb-1">{ach.title}</h3>
+                <p className="text-xs text-stone-500 line-clamp-1 mb-0.5">{ach.org}</p>
+                <p className="text-xs text-stone-400 font-mono">{ach.date}</p>
+                {ach.description && <p className="text-xs text-stone-400 line-clamp-2 mt-2 leading-relaxed">{ach.description}</p>}
+                {ach.link && (
+                  <a href={ach.link} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="inline-flex items-center gap-1 mt-3 text-xs text-sky-500 hover:text-sky-700 transition-colors">
+                    <ExternalLink size={11} /> Lihat Sertifikat
+                  </a>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Empty State */}
-      {filteredAchievements.length === 0 && (
-        <p className="text-center text-gray-500 mt-10">
-          Tidak ada data yang cocok.
-        </p>
+          ))}
+        </div>
       )}
 
       {/* Modal */}
       {modal && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 backdrop-blur-sm"
-          onClick={() => setModal(null)}
-        >
-          <div
-            className="relative max-w-3xl w-full mx-4 bg-white rounded-lg overflow-hidden shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              className="absolute top-2 right-2 text-black hover:text-red-500"
-              onClick={() => setModal(null)}
-            >
-              <X size={24} />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4" onClick={() => setModal(null)}>
+          <div className="relative w-full max-w-2xl bg-white rounded-2xl overflow-hidden shadow-2xl border border-stone-100" onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => setModal(null)} className="absolute top-3 right-3 z-10 p-1.5 bg-white/90 hover:bg-white rounded-lg shadow-sm border border-stone-100 text-stone-500 hover:text-stone-800 transition">
+              <X size={15} />
             </button>
-            <img
-              src={modal.img}
-              alt={modal.title}
-              className="w-full object-contain max-h-[90vh]"
-            />
-            <div className="p-4 text-black">
-              <h3 className="text-xl font-semibold">{modal.title}</h3>
-              <p className="text-sm">{modal.org}</p>
-              <p className="text-xs text-gray-600">{modal.date}</p>
+
+            <div className="bg-stone-100 w-full max-h-[60vh] overflow-hidden flex items-center justify-center">
+              {modal.img ? (
+                <img src={modal.img} alt={modal.title} className="w-full object-contain max-h-[60vh]" />
+              ) : (
+                <div className="h-40 flex items-center justify-center">
+                  <Trophy size={40} className="text-stone-300" />
+                </div>
+              )}
+            </div>
+
+            <div className="p-5">
+              <div className="flex items-start justify-between gap-3 mb-2">
+                <h3 className="text-base font-bold text-stone-900 leading-snug">{modal.title}</h3>
+                <span className={`shrink-0 px-2.5 py-1 rounded-full text-xs font-medium capitalize border ${CATEGORY_COLORS[modal.category] || "bg-stone-100 text-stone-600 border-stone-200"}`}>
+                  {modal.category}
+                </span>
+              </div>
+              <p className="text-sm text-stone-600 mb-0.5">{modal.org}</p>
+              <p className="text-xs text-stone-400 font-mono mb-3">{modal.date}</p>
+              {modal.description && <p className="text-sm text-stone-500 leading-relaxed border-t border-stone-100 pt-3">{modal.description}</p>}
+              {modal.link && (
+                <a href={modal.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 mt-3 text-sm text-sky-500 hover:text-sky-700 transition-colors font-medium">
+                  <ExternalLink size={13} /> Lihat Sertifikat
+                </a>
+              )}
             </div>
           </div>
         </div>

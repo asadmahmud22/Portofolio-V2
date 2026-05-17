@@ -1,177 +1,256 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 
 export default function SplashScreen({ finishLoading }) {
-  const [showText, setShowText] = useState(false);
-  const [showSubtext, setShowSubtext] = useState(false);
+  const [phase, setPhase] = useState(0);
+  // phase 0: initial black
+  // phase 1: name appears
+  // phase 2: tagline appears
+  // phase 3: progress bar fills
+  // phase 4: exit
 
   useEffect(() => {
-    // Show main text after 0.5s
-    const textTimer = setTimeout(() => setShowText(true), 500);
-
-    // Show subtext after 1.5s
-    const subtextTimer = setTimeout(() => setShowSubtext(true), 1500);
-
-    // Finish loading after 3.5s
-    const finishTimer = setTimeout(() => finishLoading(), 3500);
-
-    return () => {
-      clearTimeout(textTimer);
-      clearTimeout(subtextTimer);
-      clearTimeout(finishTimer);
-    };
+    const t1 = setTimeout(() => setPhase(1), 400);
+    const t2 = setTimeout(() => setPhase(2), 1600);
+    const t3 = setTimeout(() => setPhase(3), 2400);
+    const t4 = setTimeout(() => setPhase(4), 3800);
+    const t5 = setTimeout(() => finishLoading(), 4200);
+    return () => [t1, t2, t3, t4, t5].forEach(clearTimeout);
   }, [finishLoading]);
 
-  // Animation variants
-  const letterVariants = {
-    hidden: { opacity: 0, y: 20, rotateX: -90 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      rotateX: 0,
-      transition: { duration: 0.6, ease: "easeOut" },
-    },
-  };
-
-  const floatingVariants = {
-    float: {
-      y: [-10, 10, -10],
-      transition: { duration: 3, repeat: Infinity, ease: "easeInOut" },
-    },
-  };
-
-  const glowVariants = {
-    glow: {
-      boxShadow: [
-        "0 0 20px rgba(59, 130, 246, 0.3)",
-        "0 0 40px rgba(59, 130, 246, 0.5)",
-        "0 0 20px rgba(59, 130, 246, 0.3)",
-      ],
-      transition: { duration: 2, repeat: Infinity, ease: "easeInOut" },
-    },
-  };
-
-  const text = "Welcome to my website";
-  const words = text.split(" ");
+  const nameChars = "As'ad Mahmud Akram".split("");
 
   return (
-    <motion.div
-      className="fullscreen flex items-center justify-center bg-gradient-to-br from-white via-gray-50 to-blue-50 relative overflow-hidden"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
-      {/* Background floating circles */}
-      <div className="absolute inset-0 overflow-hidden">
-        {[...Array(6)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute rounded-full bg-gradient-to-r from-blue-100 to-purple-100 opacity-30"
-            style={{
-              width: Math.random() * 100 + 50,
-              height: Math.random() * 100 + 50,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              x: [0, Math.random() * 100 - 50],
-              y: [0, Math.random() * 100 - 50],
-              scale: [1, 1.2, 1],
-              rotate: [0, 360],
-            }}
-            transition={{
-              duration: 10 + Math.random() * 10,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Content box */}
-      <motion.div
-        className="relative p-8 rounded-2xl bg-white/80 backdrop-blur-sm border border-gray-200 text-center z-10"
-        variants={glowVariants}
-        animate="glow"
-      >
-        {/* Title */}
-        <div className="mb-6">
-          {showText && (
-            <div className="flex flex-wrap justify-center gap-2">
-              {words.map((word, wi) => (
-                <div key={wi} className="flex">
-                  {word.split("").map((letter, li) => (
-                    <motion.span
-                      key={`${wi}-${li}`}
-                      variants={letterVariants}
-                      initial="hidden"
-                      animate="visible"
-                      transition={{ delay: wi * 0.1 + li * 0.05 }}
-                      className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-blue-600 to-purple-600 bg-clip-text text-transparent inline-block"
-                    >
-                      {letter}
-                    </motion.span>
-                  ))}
-                  {wi < words.length - 1 && <span className="mx-1">&nbsp;</span>}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Subtitle */}
-        {showSubtext && (
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.5 }}
-            className="space-y-3"
-          >
-            <p className="text-gray-600 text-lg md:text-xl font-medium">
-              Discover amazing projects and experiences
-            </p>
-
-            {/* Loading dots */}
-            <motion.div
-              className="flex justify-center items-center gap-1"
-              variants={floatingVariants}
-              animate="float"
-            >
-              {[...Array(3)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"
-                  animate={{
-                    scale: [1, 1.5, 1],
-                    opacity: [0.3, 1, 0.3],
-                  }}
-                  transition={{
-                    duration: 1.5,
-                    repeat: Infinity,
-                    delay: i * 0.2,
-                    ease: "easeInOut",
-                  }}
-                />
-              ))}
-            </motion.div>
-          </motion.div>
-        )}
-
-        {/* Progress bar */}
+    <AnimatePresence>
+      {phase < 4 && (
         <motion.div
-          className="mt-8 w-64 h-1 bg-gray-200 rounded-full mx-auto overflow-hidden"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2 }}
+          key="splash"
+          className="fullscreen flex flex-col items-center justify-center relative overflow-hidden"
+          style={{ background: "#020202" }}
+          initial={{ opacity: 1 }}
+          exit={{ opacity: 0, transition: { duration: 0.5, ease: "easeInOut" } }}
         >
-          <motion.div
-            className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"
-            initial={{ width: "0%" }}
-            animate={{ width: "100%" }}
-            transition={{ duration: 3, ease: "easeInOut", delay: 0.5 }}
+          {/* Grain texture overlay */}
+          <div
+            className="absolute inset-0 pointer-events-none z-10 opacity-[0.035]"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")`,
+              backgroundRepeat: "repeat",
+              backgroundSize: "128px 128px",
+            }}
           />
+
+          {/* Subtle radial gradient glow center */}
+          <motion.div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(255,255,255,0.04) 0%, transparent 70%)",
+            }}
+            animate={{ opacity: [0, 1, 0.7] }}
+            transition={{ duration: 2, ease: "easeOut" }}
+          />
+
+          {/* Thin horizontal line top */}
+          <motion.div
+            className="absolute top-0 left-0 right-0 h-px"
+            style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)" }}
+            initial={{ scaleX: 0, opacity: 0 }}
+            animate={phase >= 1 ? { scaleX: 1, opacity: 1 } : {}}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+          />
+
+          {/* Thin horizontal line bottom */}
+          <motion.div
+            className="absolute bottom-0 left-0 right-0 h-px"
+            style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)" }}
+            initial={{ scaleX: 0, opacity: 0 }}
+            animate={phase >= 1 ? { scaleX: 1, opacity: 1 } : {}}
+            transition={{ duration: 1.2, ease: "easeOut", delay: 0.1 }}
+          />
+
+          {/* Corner brackets */}
+          {[
+            { top: "24px", left: "24px", rotate: "0deg" },
+            { top: "24px", right: "24px", rotate: "90deg" },
+            { bottom: "24px", left: "24px", rotate: "-90deg" },
+            { bottom: "24px", right: "24px", rotate: "180deg" },
+          ].map((style, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-6 h-6 pointer-events-none"
+              style={{
+                ...style,
+                borderTop: "1px solid rgba(255,255,255,0.25)",
+                borderLeft: "1px solid rgba(255,255,255,0.25)",
+                transformOrigin: "center",
+                transform: `rotate(${style.rotate})`,
+              }}
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={phase >= 1 ? { opacity: 1, scale: 1 } : {}}
+              transition={{ duration: 0.5, delay: 0.3 + i * 0.05 }}
+            />
+          ))}
+
+          {/* Main content */}
+          <div className="relative z-20 text-center px-6 select-none">
+
+            {/* Small label above */}
+            <motion.p
+              className="text-xs tracking-[2em] uppercase mb-6 font-light"
+              style={{
+                color: "rgba(255,255,255,0.3)",
+                fontFamily: "'Courier New', monospace",
+                fontSize: "1rem",
+              }}
+              initial={{ opacity: 0, y: -10 }}
+              animate={phase >= 1 ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              Portfolio
+            </motion.p>
+
+            {/* Name — character-by-character reveal */}
+            <div
+              className="overflow-hidden mb-2"
+              style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}
+            >
+              <div className="flex flex-wrap justify-center">
+                {nameChars.map((char, i) => (
+                  <motion.span
+                    key={i}
+                    className="inline-block"
+                    style={{
+                      fontSize: "clamp(2rem, 6vw, 4.5rem)",
+                      fontWeight: 300,
+                      letterSpacing: char === " " ? "0.2em" : "0.02em",
+                      color: "#ffffff",
+                      lineHeight: 1.1,
+                    }}
+                    initial={{ opacity: 0, y: 40, filter: "blur(8px)" }}
+                    animate={
+                      phase >= 1
+                        ? { opacity: 1, y: 0, filter: "blur(0px)" }
+                        : {}
+                    }
+                    transition={{
+                      duration: 0.5,
+                      delay: 0.1 + i * 0.04,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                  >
+                    {char === " " ? "\u00A0" : char}
+                  </motion.span>
+                ))}
+              </div>
+            </div>
+
+            {/* Thin divider line */}
+            <motion.div
+              className="mx-auto my-5"
+              style={{ height: "1px", background: "rgba(255,255,255,0.12)" }}
+              initial={{ width: 0 }}
+              animate={phase >= 2 ? { width: "180px" } : {}}
+              transition={{ duration: 0.7, ease: "easeOut" }}
+            />
+
+            {/* Tagline */}
+            <motion.p
+              style={{
+                color: "rgba(255,255,255,0.4)",
+                fontSize: "2rem",
+                letterSpacing: "0.25em",
+                textTransform: "uppercase",
+                fontFamily: "'Courier New', monospace",
+              }}
+              initial={{ opacity: 0 }}
+              animate={phase >= 2 ? { opacity: 1 } : {}}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            >
+              Web Developer · Designer · Problem Solver
+            </motion.p>
+
+            {/* Progress bar area */}
+            <motion.div
+              className="mt-12 mx-auto"
+              style={{ width: "200px" }}
+              initial={{ opacity: 0 }}
+              animate={phase >= 3 ? { opacity: 1 } : {}}
+              transition={{ duration: 0.4 }}
+            >
+              {/* Track */}
+              <div
+                className="relative overflow-hidden"
+                style={{
+                  height: "1px",
+                  background: "rgba(255,255,255,0.08)",
+                }}
+              >
+                <motion.div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    transformOrigin: "left",
+                    background: "rgba(255,255,255,0.6)",
+                  }}
+                  initial={{ scaleX: 0 }}
+                  animate={phase >= 3 ? { scaleX: 1 } : {}}
+                  transition={{ duration: 1.4, ease: [0.4, 0, 0.2, 1] }}
+                />
+              </div>
+
+              {/* Loading label */}
+              <motion.p
+                className="mt-3 text-center"
+                style={{
+                  color: "rgba(255,255,255,0.18)",
+                  fontSize: "0.6rem",
+                  letterSpacing: "0.3em",
+                  textTransform: "uppercase",
+                  fontFamily: "'Courier New', monospace",
+                }}
+                animate={{ opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+              >
+                Loading
+              </motion.p>
+            </motion.div>
+          </div>
+
+          {/* Bottom left — subtle version tag */}
+          <motion.p
+            className="absolute bottom-6 left-6 z-20"
+            style={{
+              color: "rgba(255,255,255,0.12)",
+              fontSize: "0.55rem",
+              letterSpacing: "0.2em",
+              fontFamily: "'Courier New', monospace",
+              textTransform: "uppercase",
+            }}
+            initial={{ opacity: 0 }}
+            animate={phase >= 2 ? { opacity: 1 } : {}}
+            transition={{ duration: 1 }}
+          >
+            v2025
+          </motion.p>
+
+          {/* Bottom right — subtle year */}
+          <motion.p
+            className="absolute bottom-6 right-6 z-20"
+            style={{
+              color: "rgba(255,255,255,0.12)",
+              fontSize: "0.55rem",
+              letterSpacing: "0.2em",
+              fontFamily: "'Courier New', monospace",
+              textTransform: "uppercase",
+            }}
+            initial={{ opacity: 0 }}
+            animate={phase >= 2 ? { opacity: 1 } : {}}
+            transition={{ duration: 1 }}
+          >
+            © 2025
+          </motion.p>
         </motion.div>
-      </motion.div>
-    </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

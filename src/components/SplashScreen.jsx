@@ -94,13 +94,16 @@ export default function SplashScreen({ finishLoading }) {
           {/* Main content */}
           <div className="relative z-20 text-center px-6 select-none">
 
-            {/* Small label above */}
+            {/* Small label above — FIXED: tracking dikecilkan, font size wajar */}
             <motion.p
-              className="text-xs tracking-[2em] uppercase mb-6 font-light"
               style={{
                 color: "rgba(255,255,255,0.3)",
                 fontFamily: "'Courier New', monospace",
-                fontSize: "1rem",
+                fontSize: "0.65rem",
+                letterSpacing: "0.35em",
+                textTransform: "uppercase",
+                marginBottom: "1.5rem",
+                fontWeight: 300,
               }}
               initial={{ opacity: 0, y: -10 }}
               animate={phase >= 1 ? { opacity: 1, y: 0 } : {}}
@@ -127,11 +130,7 @@ export default function SplashScreen({ finishLoading }) {
                       lineHeight: 1.1,
                     }}
                     initial={{ opacity: 0, y: 40, filter: "blur(8px)" }}
-                    animate={
-                      phase >= 1
-                        ? { opacity: 1, y: 0, filter: "blur(0px)" }
-                        : {}
-                    }
+                    animate={phase >= 1 ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
                     transition={{
                       duration: 0.5,
                       delay: 0.1 + i * 0.04,
@@ -153,14 +152,15 @@ export default function SplashScreen({ finishLoading }) {
               transition={{ duration: 0.7, ease: "easeOut" }}
             />
 
-            {/* Tagline */}
+            {/* Tagline — FIXED: font size wajar, tracking proporsional */}
             <motion.p
               style={{
-                color: "rgba(255,255,255,0.4)",
-                fontSize: "2rem",
-                letterSpacing: "0.25em",
+                color: "rgba(255,255,255,0.35)",
+                fontSize: "0.7rem",
+                letterSpacing: "0.2em",
                 textTransform: "uppercase",
                 fontFamily: "'Courier New', monospace",
+                fontWeight: 400,
               }}
               initial={{ opacity: 0 }}
               animate={phase >= 2 ? { opacity: 1 } : {}}
@@ -180,10 +180,7 @@ export default function SplashScreen({ finishLoading }) {
               {/* Track */}
               <div
                 className="relative overflow-hidden"
-                style={{
-                  height: "1px",
-                  background: "rgba(255,255,255,0.08)",
-                }}
+                style={{ height: "1px", background: "rgba(255,255,255,0.08)" }}
               >
                 <motion.div
                   style={{
@@ -203,7 +200,7 @@ export default function SplashScreen({ finishLoading }) {
                 className="mt-3 text-center"
                 style={{
                   color: "rgba(255,255,255,0.18)",
-                  fontSize: "0.6rem",
+                  fontSize: "0.55rem",
                   letterSpacing: "0.3em",
                   textTransform: "uppercase",
                   fontFamily: "'Courier New', monospace",
@@ -216,7 +213,7 @@ export default function SplashScreen({ finishLoading }) {
             </motion.div>
           </div>
 
-          {/* Bottom left — subtle version tag */}
+          {/* Bottom left */}
           <motion.p
             className="absolute bottom-6 left-6 z-20"
             style={{
@@ -233,7 +230,7 @@ export default function SplashScreen({ finishLoading }) {
             v2025
           </motion.p>
 
-          {/* Bottom right — subtle year */}
+          {/* Bottom right */}
           <motion.p
             className="absolute bottom-6 right-6 z-20"
             style={{

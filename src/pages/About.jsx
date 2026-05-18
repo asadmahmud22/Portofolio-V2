@@ -33,13 +33,9 @@ const About = () => {
         "Menjadi panitia pelaksana dalam kegiatan pelatihan Arduino dasar yang diselenggarakan oleh HIMATEKKOM di beberapa sekolah mitra.",
         "Berperan aktif dalam kepanitiaan BEM, khususnya dalam divisi acara dan dokumentasi untuk kegiatan kemahasiswaan dan pengembangan soft skill.",
       ],
-      projects: [
-        "Mendesain dan membangun website portofolio menggunakan React, Tailwind CSS, Vite, dan ESLint, serta di-deploy ke Vercel untuk menampilkan karya, sertifikat, dan pengalaman organisasi.",
-        "Membangun sistem online exam berbasis web menggunakan HTML, CSS, JavaScript, PHP, dan MySQL, serta di-hosting di InfinityFree, dengan fitur soal dinamis, penilaian otomatis, dan rekap hasil ujian.",
-      ],
+      
       achievements: [
         "Dean's List selama 5 semester berturut-turut",
-        "Juara 2 lomba desain poster K3 tingkat mahasiswa",
       ],
     },
   ];

@@ -189,9 +189,12 @@ const ManageProjects = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f7f4] font-sans">
-      {/* Top Navbar */}
-      <header className="bg-stone-900 border-b border-stone-800">
+    // Seluruh halaman dibuat h-screen + flex-col agar navbar fixed di atas
+    // dan area konten bisa scroll vertikal secara independen
+    <div className="h-screen overflow-hidden bg-[#f8f7f4] font-sans flex flex-col">
+
+      {/* Top Navbar — tidak ikut scroll */}
+      <header className="shrink-0 bg-stone-900 border-b border-stone-800">
         <div className="w-full px-6 flex items-stretch justify-between h-14">
           <button
             onClick={() => navigate("/admin/dashboard")}
@@ -214,252 +217,257 @@ const ManageProjects = () => {
         </div>
       </header>
 
-      {/* Page Layout */}
-      <div className="w-full px-6 py-6">
-        {/* Toolbar */}
-        <div className="flex items-center gap-4 mb-5">
-          <div className="shrink-0">
-            <h1 className="text-lg font-bold text-stone-900 leading-tight">
-              Projects
-            </h1>
-            <p className="text-xs text-stone-400 mt-0.5">
-              {projects.length} project tersimpan
-            </p>
-          </div>
+      {/* Area scroll vertikal — semua konten di sini bisa di-scroll */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="w-full px-6 py-6">
 
-          <div className="w-px h-9 bg-stone-200 shrink-0" />
+          {/* Toolbar */}
+          <div className="flex items-center gap-4 mb-5">
+            <div className="shrink-0">
+              <h1 className="text-lg font-bold text-stone-900 leading-tight">
+                Projects
+              </h1>
+              <p className="text-xs text-stone-400 mt-0.5">
+                {projects.length} project tersimpan
+              </p>
+            </div>
 
-          {/* Search */}
-          <div className="relative flex-1 min-w-0">
-            <Search
-              size={14}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none"
-            />
-            <input
-              type="text"
-              placeholder="Cari judul atau deskripsi project..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-800 focus:border-transparent transition shadow-sm"
-            />
-          </div>
+            <div className="w-px h-9 bg-stone-200 shrink-0" />
 
-          {/* Category filter */}
-          <div className="relative shrink-0">
-            <Filter
-              size={13}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none"
-            />
-            <select
-              value={filterCategory}
-              onChange={(e) => setFilterCategory(e.target.value)}
-              className="pl-8 pr-8 py-2 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-800 shadow-sm appearance-none cursor-pointer"
+            {/* Search */}
+            <div className="relative flex-1 min-w-0">
+              <Search
+                size={14}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none"
+              />
+              <input
+                type="text"
+                placeholder="Cari judul atau deskripsi project..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-9 pr-4 py-2 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-800 focus:border-transparent transition shadow-sm"
+              />
+            </div>
+
+            {/* Category filter */}
+            <div className="relative shrink-0">
+              <Filter
+                size={13}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none"
+              />
+              <select
+                value={filterCategory}
+                onChange={(e) => setFilterCategory(e.target.value)}
+                className="pl-8 pr-8 py-2 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-800 shadow-sm appearance-none cursor-pointer"
+              >
+                <option value="all">Semua Kategori</option>
+                {CATEGORIES.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Add button */}
+            <button
+              onClick={handleAdd}
+              className="shrink-0 flex items-center gap-2 bg-stone-900 hover:bg-stone-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm"
             >
-              <option value="all">Semua Kategori</option>
-              {CATEGORIES.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
+              <Plus size={15} />
+              Tambah Project
+            </button>
           </div>
 
-          {/* Add button */}
-          <button
-            onClick={handleAdd}
-            className="shrink-0 flex items-center gap-2 bg-stone-900 hover:bg-stone-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm"
-          >
-            <Plus size={15} />
-            Tambah Project
-          </button>
-        </div>
-
-        {/* Table */}
-        <div className="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
-          {filtered.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 text-stone-400">
-              <FolderKanban size={32} className="mb-3 opacity-30" />
-              <p className="text-sm">Tidak ada project ditemukan.</p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="bg-stone-50 border-b border-stone-100">
-                    <th className="text-left px-5 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider w-16">
-                      Img
-                    </th>
-                    <th className="text-left px-5 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider">
-                      Judul
-                    </th>
-                    <th className="text-left px-5 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider">
-                      Deskripsi
-                    </th>
-                    <th className="text-left px-5 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider w-40">
-                      Kategori
-                    </th>
-                    <th className="text-left px-5 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider">
-                      Tech Stack
-                    </th>
-                    <th className="text-left px-5 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider w-24">
-                      Links
-                    </th>
-                    <th className="text-right px-5 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider w-24">
-                      Aksi
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-stone-50">
-                  {filtered.map((item) => (
-                    <tr
-                      key={item.id}
-                      className="hover:bg-stone-50/70 transition-colors group"
-                    >
-                      {/* Image */}
-                      <td className="px-5 py-3">
-                        {item.img ? (
-                          <img
-                            src={item.img}
-                            alt={item.title}
-                            className="w-12 h-10 object-cover rounded-lg border border-stone-200 shadow-sm"
-                          />
-                        ) : (
-                          <div className="w-12 h-10 bg-stone-100 rounded-lg border border-stone-200 flex items-center justify-center">
-                            <FolderKanban size={14} className="text-stone-300" />
-                          </div>
-                        )}
-                      </td>
-
-                      {/* Title */}
-                      <td className="px-5 py-3">
-                        <div className="flex items-center gap-1.5 mb-0.5">
-                          <p className="font-semibold text-stone-800 line-clamp-1 max-w-[180px]">
-                            {item.title}
-                          </p>
-                          {item.featured && (
-                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-amber-50 text-amber-600 border border-amber-200 rounded-full text-xs font-medium shrink-0">
-                              <Star size={9} className="fill-amber-500 text-amber-500" />
-                              Featured
-                            </span>
-                          )}
-                        </div>
-                        <span
-                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${CATEGORY_COLORS[item.category] || "bg-stone-100 text-stone-600 border border-stone-200"}`}
-                        >
-                          {item.category}
-                        </span>
-                      </td>
-
-                      {/* Description */}
-                      <td className="px-5 py-3">
-                        <p className="text-stone-500 text-xs line-clamp-2 max-w-sm leading-relaxed">
-                          {item.description || (
-                            <span className="italic text-stone-300">—</span>
-                          )}
-                        </p>
-                      </td>
-
-                      {/* Category (hidden) */}
-                      <td className="px-5 py-3 hidden">{item.category}</td>
-
-                      {/* Tech Stack */}
-                      <td className="px-5 py-3">
-                        <div className="flex flex-wrap gap-1 max-w-[200px]">
-                          {(item.tech || []).slice(0, 4).map((t) => (
-                            <span
-                              key={t}
-                              className="px-2 py-0.5 bg-stone-100 text-stone-600 border border-stone-200 rounded-full text-xs"
-                            >
-                              {t}
-                            </span>
-                          ))}
-                          {(item.tech || []).length > 4 && (
-                            <span className="px-2 py-0.5 bg-stone-100 text-stone-400 rounded-full text-xs">
-                              +{item.tech.length - 4}
-                            </span>
-                          )}
-                          {(!item.tech || item.tech.length === 0) && (
-                            <span className="text-xs text-stone-300 italic">—</span>
-                          )}
-                        </div>
-                      </td>
-
-                      {/* Links */}
-                      <td className="px-5 py-3">
-                        <div className="flex flex-col gap-1">
-                          {item.liveUrl && (
-                            <a
-                              href={item.liveUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="inline-flex items-center gap-1 text-xs text-sky-500 hover:text-sky-700 transition-colors"
-                            >
-                              <Globe size={11} /> Live
-                            </a>
-                          )}
-                          {item.githubUrl && (
-                            <a
-                              href={item.githubUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="inline-flex items-center gap-1 text-xs text-stone-500 hover:text-stone-800 transition-colors"
-                            >
-                              <Github size={11} /> GitHub
-                            </a>
-                          )}
-                          {!item.liveUrl && !item.githubUrl && (
-                            <span className="text-xs text-stone-300 italic">—</span>
-                          )}
-                        </div>
-                      </td>
-
-                      {/* Actions */}
-                      <td className="px-5 py-3">
-                        <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            onClick={() => handleEdit(item)}
-                            title="Edit"
-                            className="p-1.5 text-stone-500 hover:text-sky-600 hover:bg-sky-50 rounded-lg transition-colors"
-                          >
-                            <Pencil size={14} />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(item.id)}
-                            disabled={isDeleting === item.id}
-                            title="Hapus"
-                            className="p-1.5 text-stone-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors disabled:opacity-40"
-                          >
-                            {isDeleting === item.id ? (
-                              <div className="w-3.5 h-3.5 border-2 border-rose-300 border-t-rose-500 rounded-full animate-spin" />
-                            ) : (
-                              <Trash2 size={14} />
-                            )}
-                          </button>
-                        </div>
-                      </td>
+          {/* Table */}
+          <div className="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
+            {filtered.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-20 text-stone-400">
+                <FolderKanban size={32} className="mb-3 opacity-30" />
+                <p className="text-sm">Tidak ada project ditemukan.</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  {/* thead sticky agar tetap terlihat saat scroll */}
+                  <thead className="sticky top-0 z-10">
+                    <tr className="bg-stone-50 border-b border-stone-100">
+                      <th className="text-left px-5 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider w-16">
+                        Img
+                      </th>
+                      <th className="text-left px-5 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider">
+                        Judul
+                      </th>
+                      <th className="text-left px-5 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider">
+                        Deskripsi
+                      </th>
+                      <th className="text-left px-5 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider w-40">
+                        Kategori
+                      </th>
+                      <th className="text-left px-5 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider">
+                        Tech Stack
+                      </th>
+                      <th className="text-left px-5 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider w-24">
+                        Links
+                      </th>
+                      <th className="text-right px-5 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider w-24">
+                        Aksi
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+                  </thead>
+                  <tbody className="divide-y divide-stone-50">
+                    {filtered.map((item) => (
+                      <tr
+                        key={item.id}
+                        className="hover:bg-stone-50/70 transition-colors group"
+                      >
+                        {/* Image */}
+                        <td className="px-5 py-3">
+                          {item.img ? (
+                            <img
+                              src={item.img}
+                              alt={item.title}
+                              className="w-12 h-10 object-cover rounded-lg border border-stone-200 shadow-sm"
+                            />
+                          ) : (
+                            <div className="w-12 h-10 bg-stone-100 rounded-lg border border-stone-200 flex items-center justify-center">
+                              <FolderKanban size={14} className="text-stone-300" />
+                            </div>
+                          )}
+                        </td>
 
-          {/* Footer */}
-          {filtered.length > 0 && (
-            <div className="px-5 py-3 bg-stone-50 border-t border-stone-100 flex items-center justify-between">
-              <span className="text-xs text-stone-400">
-                Menampilkan {filtered.length} dari {projects.length} project
-              </span>
-              {filterCategory !== "all" && (
-                <button
-                  onClick={() => setFilterCategory("all")}
-                  className="text-xs text-stone-500 hover:text-stone-800 transition-colors underline underline-offset-2"
-                >
-                  Reset filter
-                </button>
-              )}
-            </div>
-          )}
+                        {/* Title */}
+                        <td className="px-5 py-3">
+                          <div className="flex items-center gap-1.5 mb-0.5">
+                            <p className="font-semibold text-stone-800 line-clamp-1 max-w-[180px]">
+                              {item.title}
+                            </p>
+                            {item.featured && (
+                              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-amber-50 text-amber-600 border border-amber-200 rounded-full text-xs font-medium shrink-0">
+                                <Star size={9} className="fill-amber-500 text-amber-500" />
+                                Featured
+                              </span>
+                            )}
+                          </div>
+                          <span
+                            className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${CATEGORY_COLORS[item.category] || "bg-stone-100 text-stone-600 border border-stone-200"}`}
+                          >
+                            {item.category}
+                          </span>
+                        </td>
+
+                        {/* Description */}
+                        <td className="px-5 py-3">
+                          <p className="text-stone-500 text-xs line-clamp-2 max-w-sm leading-relaxed">
+                            {item.description || (
+                              <span className="italic text-stone-300">—</span>
+                            )}
+                          </p>
+                        </td>
+
+                        {/* Category (hidden) */}
+                        <td className="px-5 py-3 hidden">{item.category}</td>
+
+                        {/* Tech Stack */}
+                        <td className="px-5 py-3">
+                          <div className="flex flex-wrap gap-1 max-w-[200px]">
+                            {(item.tech || []).slice(0, 4).map((t) => (
+                              <span
+                                key={t}
+                                className="px-2 py-0.5 bg-stone-100 text-stone-600 border border-stone-200 rounded-full text-xs"
+                              >
+                                {t}
+                              </span>
+                            ))}
+                            {(item.tech || []).length > 4 && (
+                              <span className="px-2 py-0.5 bg-stone-100 text-stone-400 rounded-full text-xs">
+                                +{item.tech.length - 4}
+                              </span>
+                            )}
+                            {(!item.tech || item.tech.length === 0) && (
+                              <span className="text-xs text-stone-300 italic">—</span>
+                            )}
+                          </div>
+                        </td>
+
+                        {/* Links */}
+                        <td className="px-5 py-3">
+                          <div className="flex flex-col gap-1">
+                            {item.liveUrl && (
+                              <a
+                                href={item.liveUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-1 text-xs text-sky-500 hover:text-sky-700 transition-colors"
+                              >
+                                <Globe size={11} /> Live
+                              </a>
+                            )}
+                            {item.githubUrl && (
+                              <a
+                                href={item.githubUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-1 text-xs text-stone-500 hover:text-stone-800 transition-colors"
+                              >
+                                <Github size={11} /> GitHub
+                              </a>
+                            )}
+                            {!item.liveUrl && !item.githubUrl && (
+                              <span className="text-xs text-stone-300 italic">—</span>
+                            )}
+                          </div>
+                        </td>
+
+                        {/* Actions */}
+                        <td className="px-5 py-3">
+                          <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button
+                              onClick={() => handleEdit(item)}
+                              title="Edit"
+                              className="p-1.5 text-stone-500 hover:text-sky-600 hover:bg-sky-50 rounded-lg transition-colors"
+                            >
+                              <Pencil size={14} />
+                            </button>
+                            <button
+                              onClick={() => handleDelete(item.id)}
+                              disabled={isDeleting === item.id}
+                              title="Hapus"
+                              className="p-1.5 text-stone-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors disabled:opacity-40"
+                            >
+                              {isDeleting === item.id ? (
+                                <div className="w-3.5 h-3.5 border-2 border-rose-300 border-t-rose-500 rounded-full animate-spin" />
+                              ) : (
+                                <Trash2 size={14} />
+                              )}
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {/* Footer */}
+            {filtered.length > 0 && (
+              <div className="px-5 py-3 bg-stone-50 border-t border-stone-100 flex items-center justify-between">
+                <span className="text-xs text-stone-400">
+                  Menampilkan {filtered.length} dari {projects.length} project
+                </span>
+                {filterCategory !== "all" && (
+                  <button
+                    onClick={() => setFilterCategory("all")}
+                    className="text-xs text-stone-500 hover:text-stone-800 transition-colors underline underline-offset-2"
+                  >
+                    Reset filter
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+
         </div>
       </div>
 

@@ -72,7 +72,7 @@ const emptyForm = {
   featured: false,
 };
 
-const ManageAchievements = () => {
+const ManageProjects = () => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [projects, setProjects] = useState([]);
@@ -218,7 +218,6 @@ const ManageAchievements = () => {
       <div className="w-full px-6 py-6">
         {/* Toolbar */}
         <div className="flex items-center gap-4 mb-5">
-          {/* Title & count */}
           <div className="shrink-0">
             <h1 className="text-lg font-bold text-stone-900 leading-tight">
               Projects
@@ -326,10 +325,7 @@ const ManageAchievements = () => {
                           />
                         ) : (
                           <div className="w-12 h-10 bg-stone-100 rounded-lg border border-stone-200 flex items-center justify-center">
-                            <FolderKanban
-                              size={14}
-                              className="text-stone-300"
-                            />
+                            <FolderKanban size={14} className="text-stone-300" />
                           </div>
                         )}
                       </td>
@@ -342,10 +338,7 @@ const ManageAchievements = () => {
                           </p>
                           {item.featured && (
                             <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-amber-50 text-amber-600 border border-amber-200 rounded-full text-xs font-medium shrink-0">
-                              <Star
-                                size={9}
-                                className="fill-amber-500 text-amber-500"
-                              />
+                              <Star size={9} className="fill-amber-500 text-amber-500" />
                               Featured
                             </span>
                           )}
@@ -366,7 +359,7 @@ const ManageAchievements = () => {
                         </p>
                       </td>
 
-                      {/* Category (hidden, merged into title col) */}
+                      {/* Category (hidden) */}
                       <td className="px-5 py-3 hidden">{item.category}</td>
 
                       {/* Tech Stack */}
@@ -386,9 +379,7 @@ const ManageAchievements = () => {
                             </span>
                           )}
                           {(!item.tech || item.tech.length === 0) && (
-                            <span className="text-xs text-stone-300 italic">
-                              —
-                            </span>
+                            <span className="text-xs text-stone-300 italic">—</span>
                           )}
                         </div>
                       </td>
@@ -417,9 +408,7 @@ const ManageAchievements = () => {
                             </a>
                           )}
                           {!item.liveUrl && !item.githubUrl && (
-                            <span className="text-xs text-stone-300 italic">
-                              —
-                            </span>
+                            <span className="text-xs text-stone-300 italic">—</span>
                           )}
                         </div>
                       </td>
@@ -515,11 +504,10 @@ const ManageAchievements = () => {
                   placeholder="/projects/nama-file.jpg"
                   value={form.img}
                   onChange={(e) => setForm({ ...form, img: e.target.value })}
-                  className="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-stone-800 bg-stone-50 placeholder:text-stone-400"
+                  className="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-stone-800 bg-stone-50 placeholder:text-stone-400"
                 />
                 <p className="text-xs text-stone-400 mt-1">
-                  Taruh gambar di folder <code>public/projects/</code> lalu isi
-                  path-nya.
+                  Taruh gambar di folder <code>public/projects/</code> lalu isi path-nya.
                 </p>
               </div>
 
@@ -527,16 +515,14 @@ const ManageAchievements = () => {
               <div>
                 <label className="block text-xs font-semibold text-stone-600 uppercase tracking-wider mb-2">
                   Judul{" "}
-                  <span className="text-rose-500 normal-case font-normal">
-                    *wajib
-                  </span>
+                  <span className="text-rose-500 normal-case font-normal">*wajib</span>
                 </label>
                 <input
                   type="text"
                   value={form.title}
                   onChange={(e) => setForm({ ...form, title: e.target.value })}
                   placeholder="Nama project"
-                  className="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-stone-800 bg-stone-50 placeholder:text-stone-400"
+                  className="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-stone-800 bg-stone-50 placeholder:text-stone-400"
                 />
               </div>
 
@@ -544,18 +530,14 @@ const ManageAchievements = () => {
               <div>
                 <label className="block text-xs font-semibold text-stone-600 uppercase tracking-wider mb-2">
                   Deskripsi{" "}
-                  <span className="text-rose-500 normal-case font-normal">
-                    *wajib
-                  </span>
+                  <span className="text-rose-500 normal-case font-normal">*wajib</span>
                 </label>
                 <textarea
                   value={form.description}
-                  onChange={(e) =>
-                    setForm({ ...form, description: e.target.value })
-                  }
+                  onChange={(e) => setForm({ ...form, description: e.target.value })}
                   placeholder="Deskripsi singkat project"
                   rows={3}
-                  className="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-stone-800 bg-stone-50 placeholder:text-stone-400 resize-none"
+                  className="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-stone-800 bg-stone-50 placeholder:text-stone-400 resize-none"
                 />
               </div>
 
@@ -566,10 +548,8 @@ const ManageAchievements = () => {
                 </label>
                 <select
                   value={form.category}
-                  onChange={(e) =>
-                    setForm({ ...form, category: e.target.value })
-                  }
-                  className="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-stone-800 bg-stone-50"
+                  onChange={(e) => setForm({ ...form, category: e.target.value })}
+                  className="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-stone-800 bg-stone-50"
                 >
                   {CATEGORIES.map((c) => (
                     <option key={c} value={c}>
@@ -593,7 +573,7 @@ const ManageAchievements = () => {
                       className={`px-3 py-1 rounded-full text-xs border transition-all ${
                         form.tech.includes(tech)
                           ? "bg-stone-900 text-white border-stone-900"
-                          : "bg-white text-stone-600 border-stone-200 hover:border-stone-400"
+                          : "bg-white text-stone-900 border-stone-200 hover:border-stone-400"
                       }`}
                     >
                       {tech}
@@ -607,9 +587,7 @@ const ManageAchievements = () => {
                 <div>
                   <label className="block text-xs font-semibold text-stone-600 uppercase tracking-wider mb-2">
                     Live URL{" "}
-                    <span className="text-stone-400 normal-case font-normal">
-                      (opsional)
-                    </span>
+                    <span className="text-stone-400 normal-case font-normal">(opsional)</span>
                   </label>
                   <div className="relative">
                     <Globe
@@ -619,20 +597,16 @@ const ManageAchievements = () => {
                     <input
                       type="text"
                       value={form.liveUrl}
-                      onChange={(e) =>
-                        setForm({ ...form, liveUrl: e.target.value })
-                      }
+                      onChange={(e) => setForm({ ...form, liveUrl: e.target.value })}
                       placeholder="https://..."
-                      className="w-full pl-8 border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-stone-800 bg-stone-50 placeholder:text-stone-400"
+                      className="w-full pl-8 border border-stone-200 rounded-lg px-3 py-2 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-stone-800 bg-stone-50 placeholder:text-stone-400"
                     />
                   </div>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-stone-600 uppercase tracking-wider mb-2">
                     GitHub URL{" "}
-                    <span className="text-stone-400 normal-case font-normal">
-                      (opsional)
-                    </span>
+                    <span className="text-stone-400 normal-case font-normal">(opsional)</span>
                   </label>
                   <div className="relative">
                     <Github
@@ -642,11 +616,9 @@ const ManageAchievements = () => {
                     <input
                       type="text"
                       value={form.githubUrl}
-                      onChange={(e) =>
-                        setForm({ ...form, githubUrl: e.target.value })
-                      }
+                      onChange={(e) => setForm({ ...form, githubUrl: e.target.value })}
                       placeholder="https://github.com/..."
-                      className="w-full pl-8 border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-stone-800 bg-stone-50 placeholder:text-stone-400"
+                      className="w-full pl-8 border border-stone-200 rounded-lg px-3 py-2 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-stone-800 bg-stone-50 placeholder:text-stone-400"
                     />
                   </div>
                 </div>
@@ -669,18 +641,13 @@ const ManageAchievements = () => {
                   />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-stone-700">
-                    Featured Project
-                  </p>
+                  <p className="text-sm font-medium text-stone-700">Featured Project</p>
                   <p className="text-xs text-stone-400">
                     Ditampilkan di bagian utama portofolio
                   </p>
                 </div>
                 {form.featured && (
-                  <Star
-                    size={14}
-                    className="ml-auto fill-amber-400 text-amber-400"
-                  />
+                  <Star size={14} className="ml-auto fill-amber-400 text-amber-400" />
                 )}
               </div>
             </div>
@@ -713,4 +680,4 @@ const ManageAchievements = () => {
   );
 };
 
-export default ManageAchievements;
+export default ManageProjects;

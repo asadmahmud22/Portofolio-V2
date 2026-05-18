@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 export default function SplashScreen({ finishLoading }) {
   const [phase, setPhase] = useState(0);
-  // phase 0: initial black
+  // phase 0: initial white
   // phase 1: name appears
   // phase 2: tagline appears
   // phase 3: progress bar fills
@@ -27,13 +27,13 @@ export default function SplashScreen({ finishLoading }) {
         <motion.div
           key="splash"
           className="fullscreen flex flex-col items-center justify-center relative overflow-hidden"
-          style={{ background: "#020202" }}
+          style={{ background: "#ffffff" }}
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, transition: { duration: 0.5, ease: "easeInOut" } }}
         >
           {/* Grain texture overlay */}
           <div
-            className="absolute inset-0 pointer-events-none z-10 opacity-[0.035]"
+            className="absolute inset-0 pointer-events-none z-10 opacity-[0.025]"
             style={{
               backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")`,
               backgroundRepeat: "repeat",
@@ -45,7 +45,7 @@ export default function SplashScreen({ finishLoading }) {
           <motion.div
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(255,255,255,0.04) 0%, transparent 70%)",
+              background: "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(0,0,0,0.03) 0%, transparent 70%)",
             }}
             animate={{ opacity: [0, 1, 0.7] }}
             transition={{ duration: 2, ease: "easeOut" }}
@@ -54,7 +54,7 @@ export default function SplashScreen({ finishLoading }) {
           {/* Thin horizontal line top */}
           <motion.div
             className="absolute top-0 left-0 right-0 h-px"
-            style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)" }}
+            style={{ background: "linear-gradient(90deg, transparent, rgba(0,0,0,0.15), transparent)" }}
             initial={{ scaleX: 0, opacity: 0 }}
             animate={phase >= 1 ? { scaleX: 1, opacity: 1 } : {}}
             transition={{ duration: 1.2, ease: "easeOut" }}
@@ -63,7 +63,7 @@ export default function SplashScreen({ finishLoading }) {
           {/* Thin horizontal line bottom */}
           <motion.div
             className="absolute bottom-0 left-0 right-0 h-px"
-            style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)" }}
+            style={{ background: "linear-gradient(90deg, transparent, rgba(0,0,0,0.15), transparent)" }}
             initial={{ scaleX: 0, opacity: 0 }}
             animate={phase >= 1 ? { scaleX: 1, opacity: 1 } : {}}
             transition={{ duration: 1.2, ease: "easeOut", delay: 0.1 }}
@@ -81,8 +81,8 @@ export default function SplashScreen({ finishLoading }) {
               className="absolute w-6 h-6 pointer-events-none"
               style={{
                 ...style,
-                borderTop: "1px solid rgba(255,255,255,0.25)",
-                borderLeft: "1px solid rgba(255,255,255,0.25)",
+                borderTop: "1px solid rgba(0,0,0,0.2)",
+                borderLeft: "1px solid rgba(0,0,0,0.2)",
                 transformOrigin: "center",
                 transform: `rotate(${style.rotate})`,
               }}
@@ -95,12 +95,12 @@ export default function SplashScreen({ finishLoading }) {
           {/* Main content */}
           <div className="relative z-20 text-center px-6 select-none">
 
-            {/* Small label above — FIXED: tracking dikecilkan, font size wajar */}
+            {/* Small label above */}
             <motion.p
               style={{
-                color: "rgba(255,255,255,0.3)",
+                color: "rgba(0,0,0,0.35)",
                 fontFamily: "'Courier New', monospace",
-                fontSize: "0.65rem",
+                fontSize: "1rem",
                 letterSpacing: "0.35em",
                 textTransform: "uppercase",
                 marginBottom: "1.5rem",
@@ -127,7 +127,7 @@ export default function SplashScreen({ finishLoading }) {
                       fontSize: "clamp(2rem, 6vw, 4.5rem)",
                       fontWeight: 300,
                       letterSpacing: char === " " ? "0.2em" : "0.02em",
-                      color: "#ffffff",
+                      color: "#0a0a0a",
                       lineHeight: 1.1,
                     }}
                     initial={{ opacity: 0, y: 40, filter: "blur(8px)" }}
@@ -147,17 +147,17 @@ export default function SplashScreen({ finishLoading }) {
             {/* Thin divider line */}
             <motion.div
               className="mx-auto my-5"
-              style={{ height: "1px", background: "rgba(255,255,255,0.12)" }}
+              style={{ height: "1px", background: "rgba(0,0,0,0.12)" }}
               initial={{ width: 0 }}
               animate={phase >= 2 ? { width: "180px" } : {}}
               transition={{ duration: 0.7, ease: "easeOut" }}
             />
 
-            {/* Tagline — FIXED: font size wajar, tracking proporsional */}
+            {/* Tagline */}
             <motion.p
               style={{
-                color: "rgba(255,255,255,0.35)",
-                fontSize: "0.7rem",
+                color: "rgba(0,0,0,0.4)",
+                fontSize: "1rem",
                 letterSpacing: "0.2em",
                 textTransform: "uppercase",
                 fontFamily: "'Courier New', monospace",
@@ -181,14 +181,14 @@ export default function SplashScreen({ finishLoading }) {
               {/* Track */}
               <div
                 className="relative overflow-hidden"
-                style={{ height: "1px", background: "rgba(255,255,255,0.08)" }}
+                style={{ height: "1px", background: "rgba(0,0,0,0.1)" }}
               >
                 <motion.div
                   style={{
                     position: "absolute",
                     inset: 0,
                     transformOrigin: "left",
-                    background: "rgba(255,255,255,0.6)",
+                    background: "rgba(0,0,0,0.5)",
                   }}
                   initial={{ scaleX: 0 }}
                   animate={phase >= 3 ? { scaleX: 1 } : {}}
@@ -200,13 +200,13 @@ export default function SplashScreen({ finishLoading }) {
               <motion.p
                 className="mt-3 text-center"
                 style={{
-                  color: "rgba(255,255,255,0.18)",
+                  color: "rgba(0,0,0,0.25)",
                   fontSize: "0.55rem",
                   letterSpacing: "0.3em",
                   textTransform: "uppercase",
                   fontFamily: "'Courier New', monospace",
                 }}
-                animate={{ opacity: [0.5, 1, 0.5] }}
+                animate={{ opacity: [0.4, 1, 0.4] }}
                 transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
               >
                 Loading
@@ -218,7 +218,7 @@ export default function SplashScreen({ finishLoading }) {
           <motion.p
             className="absolute bottom-6 left-6 z-20"
             style={{
-              color: "rgba(255,255,255,0.12)",
+              color: "rgba(0,0,0,0.2)",
               fontSize: "0.55rem",
               letterSpacing: "0.2em",
               fontFamily: "'Courier New', monospace",
@@ -235,7 +235,7 @@ export default function SplashScreen({ finishLoading }) {
           <motion.p
             className="absolute bottom-6 right-6 z-20"
             style={{
-              color: "rgba(255,255,255,0.12)",
+              color: "rgba(0,0,0,0.2)",
               fontSize: "0.55rem",
               letterSpacing: "0.2em",
               fontFamily: "'Courier New', monospace",

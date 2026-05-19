@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BadgeCheck, Link as LinkIcon, X } from "lucide-react";
+import { BadgeCheck, Link as LinkIcon, X, FolderOpen } from "lucide-react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 
@@ -50,67 +50,99 @@ const Projects = () => {
   }, []);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 text-black bg-white">
+    <div className="max-w-6xl mx-auto px-4 bg-white text-black">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">Projects</h1>
-        <p className="text-stone-500 text-sm max-w-lg leading-relaxed">
+        <h1 className="text-2xl font-medium tracking-tight mb-1.5">Projects</h1>
+        <p className="text-stone-400 text-sm max-w-lg leading-relaxed">
           Beberapa proyek yang telah saya kerjakan, baik proyek swasta maupun proyek sumber terbuka.
         </p>
-        <div className="border-t border-gray-300 my-4" />
+        <div className="border-t border-stone-200 mt-4" />
       </div>
 
       {/* Loading */}
       {isLoading && (
         <div className="flex justify-center items-center py-20">
-          <div className="w-8 h-8 border-4 border-gray-300 border-t-gray-900 rounded-full animate-spin" />
+          <div className="w-6 h-6 border-2 border-stone-200 border-t-stone-600 rounded-full animate-spin" />
         </div>
       )}
 
       {/* Empty */}
       {!isLoading && projects.length === 0 && (
-        <p className="text-center text-gray-500 mt-10">
-          Belum ada project yang ditambahkan.
-        </p>
+        <div className="flex flex-col items-center justify-center py-24 text-stone-400">
+          <FolderOpen size={32} className="mb-3 opacity-20" />
+          <p className="text-sm">Belum ada project yang ditambahkan.</p>
+        </div>
       )}
 
-      {/* Grid Cards */}
+      {/* Grid */}
       {!isLoading && projects.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-16">
           {projects.map((project) => (
             <div
               key={project.id}
               onClick={() => setModal(project)}
-              className="relative bg-black/20 backdrop-blur-md p-4 rounded-lg shadow-xl shadow-black border border-black/10 hover:scale-[1.02] transition cursor-pointer"
+              className="group relative flex flex-col bg-stone-50 border border-stone-200 rounded-xl overflow-hidden cursor-pointer hover:border-stone-300 hover:shadow-md transition-all duration-200"
             >
-              {project.img ? (
-                <img src={project.img} alt={project.title} className="w-full h-45 object-cover rounded-md mb-3" />
-              ) : (
-                <div className="w-full h-45 bg-gray-100 rounded-md mb-3 flex items-center justify-center text-gray-300 text-sm">
-                  No Image
-                </div>
-              )}
+              {/* Thumbnail */}
+              <div className="relative w-full h-40 bg-stone-200 overflow-hidden flex items-center justify-center">
+                {project.img ? (
+                  <img
+                    src={project.img}
+                    alt={project.title}
+                    className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-300"
+                  />
+                ) : (
+                  <span className="text-xs text-stone-400 font-mono">no image</span>
+                )}
 
-              {project.featured && (
-                <div className="absolute top-2 right-2 bg-blue-600 text-xs px-2 py-1 rounded-full flex items-center gap-1 text-white">
-                  <BadgeCheck size={12} /> Featured
-                </div>
-              )}
+                {project.featured && (
+                  <div className="absolute top-2.5 right-2.5 inline-flex items-center gap-1 bg-blue-600 text-blue-50 text-[11px] font-medium px-2.5 py-1 rounded-full">
+                    <BadgeCheck size={11} />
+                    Featured
+                  </div>
+                )}
+              </div>
 
-              <h3 className="text-md font-semibold">{project.title}</h3>
-              <p className="text-sm text-gray-800 mt-1 line-clamp-3">{project.description}</p>
+              {/* Body */}
+              <div className="flex flex-col flex-1 p-3.5 gap-1">
+                <h3 className="text-[13px] font-medium text-stone-900 leading-snug">
+                  {project.title}
+                </h3>
 
-              {project.tech?.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-3">
-                  {project.tech.map((tech, index) =>
-                    techIcons[tech.toLowerCase()] ? (
-                      <img key={index} src={techIcons[tech.toLowerCase()]} alt={tech} title={tech} className="w-5 h-5" />
-                    ) : (
-                      <span key={index} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{tech}</span>
-                    )
-                  )}
-                </div>
-              )}
+                {project.category && (
+                  <span className="w-fit text-[11px] text-stone-500 bg-white border border-stone-200 px-2 py-0.5 rounded-full mt-0.5">
+                    {project.category}
+                  </span>
+                )}
+
+                <p className="text-[12px] text-stone-500 line-clamp-3 leading-relaxed mt-1.5">
+                  {project.description}
+                </p>
+
+                {project.tech?.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mt-auto pt-3 border-t border-stone-200 mt-3">
+                    {project.tech.map((tech, index) =>
+                      techIcons[tech.toLowerCase()] ? (
+                        <img
+                          key={index}
+                          src={techIcons[tech.toLowerCase()]}
+                          alt={tech}
+                          title={tech}
+                          className="w-[18px] h-[18px] object-contain opacity-80"
+                        />
+                      ) : (
+                        <span
+                          key={index}
+                          className="text-[11px] bg-white border border-stone-200 text-stone-500 px-2 py-0.5 rounded-full"
+                        >
+                          {tech}
+                        </span>
+                      )
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -118,54 +150,94 @@ const Projects = () => {
 
       {/* Modal */}
       {modal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 backdrop-blur-sm" onClick={() => setModal(null)}>
-          <div className="relative max-w-3xl w-full mx-4 bg-white rounded-lg overflow-hidden shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <button className="absolute top-2 right-2 text-black hover:text-red-500 z-10" onClick={() => setModal(null)}>
-              <X size={24} />
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4"
+          onClick={() => setModal(null)}
+        >
+          <div
+            className="relative w-full max-w-2xl bg-white rounded-2xl overflow-hidden border border-stone-100 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setModal(null)}
+              className="absolute top-3 right-3 z-10 p-1.5 bg-white rounded-lg border border-stone-200 text-stone-500 hover:text-stone-900 hover:border-stone-300 transition"
+            >
+              <X size={14} />
             </button>
 
-            {modal.img && <img src={modal.img} alt={modal.title} className="w-full object-contain max-h-[70vh]" />}
+            {modal.img && (
+              <img
+                src={modal.img}
+                alt={modal.title}
+                className="w-full object-cover max-h-[55vh]"
+              />
+            )}
 
-            <div className="p-4 text-black">
-              <div className="flex items-center gap-2 mb-1">
-                <h3 className="text-xl font-semibold">{modal.title}</h3>
+            <div className="p-5 text-black">
+              <div className="flex items-center gap-2.5 mb-1.5">
+                <h3 className="text-sm font-medium text-stone-900">{modal.title}</h3>
                 {modal.featured && (
-                  <span className="bg-blue-600 text-white text-xs px-2 py-0.5 rounded-full flex items-center gap-1">
+                  <span className="inline-flex items-center gap-1 bg-blue-600 text-blue-50 text-[11px] font-medium px-2.5 py-0.5 rounded-full shrink-0">
                     <BadgeCheck size={11} /> Featured
                   </span>
                 )}
               </div>
 
               {modal.category && (
-                <span className="inline-block text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full mb-2">{modal.category}</span>
+                <span className="inline-block text-[11px] bg-stone-100 text-stone-500 border border-stone-200 px-2.5 py-0.5 rounded-full mb-3">
+                  {modal.category}
+                </span>
               )}
 
-              <p className="text-sm mt-1 text-gray-700 leading-relaxed">{modal.description}</p>
+              <p className="text-sm text-stone-500 leading-relaxed">{modal.description}</p>
 
               {modal.tech?.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-3">
+                <div className="flex flex-wrap gap-2 mt-4 pt-3 border-t border-stone-100">
                   {modal.tech.map((tech, index) =>
                     techIcons[tech.toLowerCase()] ? (
-                      <img key={index} src={techIcons[tech.toLowerCase()]} alt={tech} title={tech} className="w-6 h-6" />
+                      <img
+                        key={index}
+                        src={techIcons[tech.toLowerCase()]}
+                        alt={tech}
+                        title={tech}
+                        className="w-5 h-5 object-contain opacity-80"
+                      />
                     ) : (
-                      <span key={index} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{tech}</span>
+                      <span
+                        key={index}
+                        className="text-[11px] bg-stone-100 border border-stone-200 text-stone-500 px-2.5 py-0.5 rounded-full"
+                      >
+                        {tech}
+                      </span>
                     )
                   )}
                 </div>
               )}
 
-              <div className="flex gap-4 mt-3">
-                {modal.liveUrl && (
-                  <a href={modal.liveUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm text-blue-600 hover:underline">
-                    <LinkIcon size={14} /> Visit Project
-                  </a>
-                )}
-                {modal.githubUrl && (
-                  <a href={modal.githubUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm text-gray-700 hover:underline">
-                    <LinkIcon size={14} /> GitHub
-                  </a>
-                )}
-              </div>
+              {(modal.liveUrl || modal.githubUrl) && (
+                <div className="flex gap-5 mt-4 pt-3 border-t border-stone-100">
+                  {modal.liveUrl && (
+                    
+                    <a href={modal.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-[12px] font-medium text-sky-500 hover:text-sky-600 transition-colors"
+                    >
+                      <LinkIcon size={12} /> Visit Project
+                    </a>
+                  )}
+                  {modal.githubUrl && (
+                    
+                    <a href={modal.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-[12px] font-medium text-stone-500 hover:text-stone-800 transition-colors"
+                    >
+                      <LinkIcon size={12} /> GitHub
+                    </a>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>

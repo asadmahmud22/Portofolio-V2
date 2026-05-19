@@ -147,19 +147,6 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-white text-black">
       <div className="w-full max-w-6xl mx-auto px-4 sm:px-6">
-        {/* Status */}
-        <div className="mb-6 sm:mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 sm:mb-4 gap-2">
-            <div className="text-sm text-gray-600">Status</div>
-            <div className="text-left sm:text-right">
-              <div className="text-green-600 text-sm flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-600 rounded-full animate-pulse"></div>
-                Available for work
-              </div>
-            </div>
-          </div>
-          <div className="border-t border-gray-200 my-3 sm:my-4"></div>
-        </div>
 
         {/* Intro */}
         <div className="mb-8 sm:mb-12">
@@ -181,7 +168,7 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="text-gray-700 space-y-3 sm:space-y-4 text-sm sm:text-base leading-relaxed">
+          <div className="text-gray-700 space-y-3 sm:space-y-3 text-sm sm:text-base leading-relaxed">
             <p>
               Saya adalah mahasiswa Teknologi Komputer di Universitas Teknologi
               Digital Indonesia angkatan 2023. Sebagai seorang pengembang
@@ -196,17 +183,9 @@ const Home = () => {
         </div>
 
         {/* Resume Section */}
-        <div className="mb-8 sm:mb-10">
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-3">
+        <div className="mb-5 sm:mb-10">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-1">
             <div className="flex flex-wrap gap-2">
-              <a
-                href="/src/assets/As'ad Mahmud Akram_Portofolio.pdf"
-                download
-                className="bg-black/10 hover:bg-black/20 text-black text-xs sm:text-sm px-3 py-2 rounded-full border border-black/20 hover:scale-[1.02] transition flex items-center gap-2 justify-center min-w-[120px]"
-              >
-                <Download size={14} />
-                Portfolio
-              </a>
               <a
                 href="/src/assets/As'ad Mahmud Akram_CV.pdf"
                 download

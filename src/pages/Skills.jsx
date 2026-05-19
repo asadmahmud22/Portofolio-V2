@@ -1,104 +1,244 @@
 import React from "react";
+import { Monitor, Server, Wrench, Palette } from "lucide-react";
 
 const Skills = () => {
   const skills = [
     {
       category: "Frontend Development",
+      icon: <Monitor size={13} />,
       items: [
-        { name: "React", color: "bg-cyan-400", description: "Membangun UI interaktif dan SPA menggunakan React hooks, component-based architecture, dan state management." },
-        { name: "Next.js", color: "bg-black", description: "Mengembangkan aplikasi web full-stack dengan SSR, SSG, dan App Router untuk performa optimal." },
-        { name: "JavaScript", color: "bg-yellow-400", description: "Menguasai ES6+, async/await, DOM manipulation, dan logika pemrograman berbasis web." },
-        { name: "TypeScript", color: "bg-blue-600", description: "Menulis kode yang lebih aman dan terstruktur dengan static typing pada proyek React dan Node.js." },
-        { name: "Tailwind CSS", color: "bg-teal-400", description: "Membangun tampilan responsif dan modern secara cepat menggunakan utility-first CSS framework." },
-        { name: "HTML / CSS", color: "bg-orange-500", description: "Fondasi kuat dalam semantic HTML5 dan CSS3 termasuk flexbox, grid, dan animasi." },
+        {
+          name: "React",
+          dot: "#22D3EE",
+          description:
+            "UI interaktif dan SPA dengan hooks, component-based architecture, dan state management.",
+        },
+        {
+          name: "Next.js",
+          dot: "#2C2C2A",
+          description:
+            "Aplikasi full-stack dengan SSR, SSG, dan App Router untuk performa optimal.",
+        },
+        {
+          name: "JavaScript",
+          dot: "#FACC15",
+          description:
+            "ES6+, async/await, DOM manipulation, dan logika pemrograman berbasis web.",
+        },
+        {
+          name: "TypeScript",
+          dot: "#3B82F6",
+          description:
+            "Kode lebih aman dan terstruktur dengan static typing pada proyek React dan Node.js.",
+        },
+        {
+          name: "Tailwind CSS",
+          dot: "#2DD4BF",
+          description:
+            "Tampilan responsif dan modern secara cepat dengan utility-first CSS framework.",
+        },
+        {
+          name: "HTML / CSS",
+          dot: "#F97316",
+          description:
+            "Semantic HTML5 dan CSS3 termasuk flexbox, grid, dan animasi.",
+        },
       ],
     },
     {
       category: "Backend Development",
+      icon: <Server size={13} />,
       items: [
-        { name: "Laravel", color: "bg-red-500", description: "Membangun aplikasi web berbasis MVC menggunakan Laravel, termasuk routing, Eloquent ORM, dan Blade templating." },
-        { name: "PHP", color: "bg-indigo-500", description: "Mengembangkan aplikasi web dinamis dan sistem backend menggunakan PHP native maupun framework Laravel." },
-        { name: "Node.js", color: "bg-green-500", description: "Membangun server-side application dan REST API menggunakan Node.js dengan Express." },
-        { name: "Python", color: "bg-blue-400", description: "Menggunakan Python untuk scripting, otomasi, dan eksplorasi data sederhana." },
-        { name: "REST APIs", color: "bg-purple-500", description: "Merancang dan mengonsumsi RESTful API untuk komunikasi antar layanan frontend dan backend." },
-        { name: "MySQL", color: "bg-orange-400", description: "Merancang skema database relasional, menulis query kompleks, dan mengelola data menggunakan MySQL." },
+        {
+          name: "Laravel",
+          dot: "#EF4444",
+          description:
+            "Aplikasi web berbasis MVC dengan routing, Eloquent ORM, dan Blade templating.",
+        },
+        {
+          name: "PHP",
+          dot: "#818CF8",
+          description:
+            "Aplikasi web dinamis dan sistem backend secara native maupun dengan Laravel.",
+        },
+        {
+          name: "Node.js",
+          dot: "#22C55E",
+          description:
+            "Server-side application dan REST API menggunakan Node.js dengan Express.",
+        },
+        {
+          name: "Python",
+          dot: "#60A5FA",
+          description: "Scripting, otomasi, dan eksplorasi data sederhana.",
+        },
+        {
+          name: "REST APIs",
+          dot: "#A855F7",
+          description:
+            "Merancang dan mengonsumsi RESTful API untuk komunikasi antar layanan.",
+        },
+        {
+          name: "MySQL",
+          dot: "#FB923C",
+          description:
+            "Skema database relasional, query kompleks, dan manajemen data.",
+        },
       ],
     },
     {
       category: "DevOps & Tools",
+      icon: <Wrench size={13} />,
       items: [
-        { name: "Git & GitHub", color: "bg-orange-600", description: "Version control menggunakan Git dengan workflow branching, pull request, dan kolaborasi tim di GitHub." },
-        { name: "Vercel", color: "bg-black", description: "Men-deploy aplikasi React dan Next.js ke Vercel dengan konfigurasi CI/CD otomatis dari GitHub." },
-        { name: "Linux", color: "bg-yellow-600", description: "Familiar dengan environment Linux untuk development, pengelolaan file, dan perintah terminal dasar." },
-        { name: "VS Code", color: "bg-blue-500", description: "Produktif menggunakan VS Code dengan berbagai ekstensi untuk efisiensi pengembangan web." },
-        { name: "Postman", color: "bg-orange-500", description: "Menguji dan mendokumentasikan REST API menggunakan Postman selama proses pengembangan backend." },
-        { name: "InfinityFree", color: "bg-green-600", description: "Men-hosting aplikasi web berbasis PHP dan MySQL secara gratis untuk keperluan proyek dan pembelajaran." },
+        {
+          name: "Git & GitHub",
+          dot: "#EA580C",
+          description:
+            "Version control dengan branching, pull request, dan kolaborasi tim.",
+        },
+        {
+          name: "Vercel",
+          dot: "#2C2C2A",
+          description:
+            "Deploy React dan Next.js dengan CI/CD otomatis dari GitHub.",
+        },
+        {
+          name: "Linux",
+          dot: "#CA8A04",
+          description:
+            "Environment Linux untuk development, file management, dan terminal.",
+        },
+        {
+          name: "VS Code",
+          dot: "#3B82F6",
+          description: "Ekstensi untuk efisiensi pengembangan web modern.",
+        },
+        {
+          name: "Postman",
+          dot: "#F97316",
+          description:
+            "Menguji dan mendokumentasikan REST API selama proses pengembangan backend.",
+        },
+        {
+          name: "InfinityFree",
+          dot: "#22C55E",
+          description:
+            "Hosting aplikasi PHP dan MySQL untuk proyek dan pembelajaran.",
+        },
       ],
     },
     {
       category: "Design & UX",
+      icon: <Palette size={13} />,
       items: [
-        { name: "Figma", color: "bg-purple-400", description: "Mendesain wireframe, mockup, dan prototype UI interaktif menggunakan Figma untuk kebutuhan proyek web." },
-        { name: "UI Design", color: "bg-pink-400", description: "Menerapkan prinsip desain visual seperti tipografi, warna, spacing, dan konsistensi antarmuka." },
-        { name: "UX Principles", color: "bg-indigo-500", description: "Memahami user flow, usability, dan desain berbasis pengguna untuk menciptakan pengalaman digital yang intuitif." },
-        { name: "Adobe Photoshop", color: "bg-blue-700", description: "Mengedit dan membuat aset visual seperti banner, poster, dan gambar untuk kebutuhan desain web dan publikasi." },
+        {
+          name: "Figma",
+          dot: "#C084FC",
+          description:
+            "Wireframe, mockup, dan prototype UI interaktif untuk kebutuhan proyek web.",
+        },
+        {
+          name: "UI Design",
+          dot: "#F472B6",
+          description:
+            "Tipografi, warna, spacing, dan konsistensi antarmuka visual.",
+        },
+        {
+          name: "UX Principles",
+          dot: "#818CF8",
+          description:
+            "User flow, usability, dan desain berbasis pengguna yang intuitif.",
+        },
       ],
     },
   ];
 
   const additionalSkills = [
-    "Bootstrap", "jQuery", "MongoDB", "Firebase",
-    "Arduino", "Canva", "Notion", "Trello",
-    "Microsoft Office", "Google Workspace", "Responsive Design", "SEO Basics",
+    "Bootstrap",
+    "jQuery",
+    "MongoDB",
+    "Firebase",
+    "Arduino",
+    "Canva",
+    "Notion",
+    "Trello",
+    "Microsoft Office",
+    "Google Workspace",
+    "Responsive Design",
+    "SEO Basics",
   ];
 
   const timeline = [
     {
-      year: "Mar 2025 - May 2025",
+      period: "Mar 2025 – May 2025",
       role: "Web Development Intern",
       company: "Diskominfo Kabupaten Klaten",
-      description: "Mengembangkan website UMKM Kabupaten Klaten menggunakan Laravel dan MySQL, serta berkolaborasi dengan tim dalam pengujian dan deployment aplikasi.",
+      description:
+        "Mengembangkan website UMKM menggunakan Laravel dan MySQL, serta berkolaborasi dalam pengujian dan deployment.",
     },
     {
-      year: "Aug 2024 - Present",
+      period: "Aug 2024 – Present",
       role: "Divisi HUMAS",
-      company: "HIMATEKKOM - UTDI",
-      description: "Mengelola komunikasi eksternal, media sosial, dan materi publikasi organisasi mahasiswa Teknologi Komputer.",
+      company: "HIMATEKKOM – UTDI",
+      description:
+        "Mengelola komunikasi eksternal, media sosial, dan materi publikasi organisasi mahasiswa Teknologi Komputer.",
     },
     {
-      year: "Jun 2022 - Sep 2022",
-      role: "Asisten Teknisi Jaringan - PKL",
+      period: "Jun 2022 – Sep 2022",
+      role: "Asisten Teknisi Jaringan – PKL",
       company: "Diskominfo Kabupaten Klaten",
-      description: "Membantu perbaikan infrastruktur jaringan di lapangan dan memastikan konektivitas layanan publik tetap stabil.",
+      description:
+        "Membantu perbaikan infrastruktur jaringan lapangan dan memastikan konektivitas layanan publik tetap stabil.",
     },
   ];
 
   return (
-    <div className="max-w-6xl mx-auto px-4 text-black bg-white">
+    <div className="max-w-6xl mx-auto px-4 bg-white text-black">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">My Skills</h1>
-        <p className="text-stone-500 text-sm max-w-lg leading-relaxed">
-          Teknologi dan alat yang saya gunakan untuk menciptakan pengalaman digital yang luar biasa.
+        <h1 className="text-2xl font-medium tracking-tight mb-1.5">
+          My Skills
+        </h1>
+        <p className="text-stone-400 text-sm max-w-lg leading-relaxed">
+          Teknologi dan alat yang saya gunakan untuk menciptakan pengalaman
+          digital.
         </p>
-        <div className="border-t border-gray-300 my-4" />
+        <div className="border-t border-stone-200 mt-4" />
       </div>
 
+      {/* Section label */}
+      <p className="text-[10px] font-semibold uppercase tracking-widest text-stone-400 mb-3">
+        Core Skills
+      </p>
+
       {/* Skills Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-        {skills.map((skillCategory, index) => (
-          <div key={index} className="bg-gray-100 rounded-xl border border-gray-200 p-6 hover:border-green-500 transition-all duration-300">
-            <h2 className="text-xl font-semibold mb-6 text-black flex items-center">
-              <span className="w-3 h-3 rounded-full bg-green-600 mr-3 animate-pulse" />
-              {skillCategory.category}
-            </h2>
-            <div className="space-y-4">
-              {skillCategory.items.map((skill, skillIndex) => (
-                <div key={skillIndex} className="flex items-start gap-3 p-3 rounded-lg bg-white border border-gray-200 hover:border-green-400 transition-all duration-200">
-                  <span className={`mt-1 w-3 h-3 rounded-full flex-shrink-0 ${skill.color}`} />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+        {skills.map((cat, i) => (
+          <div
+            key={i}
+            className="bg-stone-50 border border-stone-200 rounded-xl p-3.5 hover:border-stone-300 transition-colors"
+          >
+            <div className="flex items-center gap-2 text-[11px] font-medium text-stone-500 mb-3">
+              {cat.icon}
+              {cat.category}
+            </div>
+            <div className="flex flex-col gap-1.5">
+              {cat.items.map((skill, j) => (
+                <div
+                  key={j}
+                  className="flex items-start gap-2.5 bg-white border border-stone-200 rounded-lg px-3 py-2 hover:border-stone-300 transition-colors"
+                >
+                  <span
+                    className="w-2 h-2 rounded-full flex-shrink-0 mt-1"
+                    style={{ backgroundColor: skill.dot }}
+                  />
                   <div>
-                    <p className="text-sm font-semibold text-gray-800">{skill.name}</p>
-                    <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{skill.description}</p>
+                    <p className="text-[12px] font-medium text-stone-900 leading-snug">
+                      {skill.name}
+                    </p>
+                    <p className="text-[11px] text-stone-400 mt-0.5 leading-relaxed">
+                      {skill.description}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -108,11 +248,16 @@ const Skills = () => {
       </div>
 
       {/* Additional Skills */}
-      <div className="bg-gray-100 rounded-xl border border-gray-200 p-8 mb-12">
-        <h2 className="text-2xl font-semibold mb-6 text-black">Additional Skills</h2>
-        <div className="flex flex-wrap gap-3">
-          {additionalSkills.map((skill, index) => (
-            <span key={index} className="px-4 py-2 bg-gray-200 rounded-full text-sm border border-gray-300 hover:border-green-500 hover:text-green-600 transition-all">
+      <div className="bg-stone-50 border border-stone-200 rounded-xl p-3.5 mb-4">
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-stone-400 mb-3">
+          Additional Skills
+        </p>
+        <div className="flex flex-wrap gap-1.5">
+          {additionalSkills.map((skill, i) => (
+            <span
+              key={i}
+              className="text-[11px] text-stone-500 bg-white border border-stone-200 px-2.5 py-1 rounded-full hover:border-stone-400 hover:text-stone-800 transition-colors"
+            >
               {skill}
             </span>
           ))}
@@ -120,18 +265,35 @@ const Skills = () => {
       </div>
 
       {/* Experience Timeline */}
-      <div className="bg-gray-100 rounded-xl border border-gray-200 p-8">
-        <h2 className="text-2xl font-semibold mb-8 text-black">Experience Timeline</h2>
-        <div className="space-y-8">
-          {timeline.map((item, index) => (
-            <div key={index} className="relative pl-8 border-l-2 border-green-500">
-              <div className="absolute -left-2.5 top-1 w-4 h-4 rounded-full bg-green-500 border-4 border-white" />
-              <div className="mb-1">
-                <span className="text-sm text-green-600">{item.year}</span>
+      <div className="bg-stone-50 border border-stone-200 rounded-xl p-3.5 pb-16">
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-stone-400 mb-4">
+          Experience Timeline
+        </p>
+        <div className="flex flex-col">
+          {timeline.map((item, i) => (
+            <div key={i} className="flex gap-3.5 pb-5 last:pb-0">
+              {/* Line + dot */}
+              <div className="flex flex-col items-center flex-shrink-0">
+                <div className="w-2 h-2 rounded-full bg-stone-400 mt-1" />
+                {i < timeline.length - 1 && (
+                  <div className="w-px flex-1 bg-stone-200 mt-1" />
+                )}
               </div>
-              <h3 className="text-lg font-semibold text-black">{item.role}</h3>
-              <p className="text-gray-600 mb-2">{item.company}</p>
-              <p className="text-gray-700 text-sm">{item.description}</p>
+              {/* Content */}
+              <div className="flex-1">
+                <p className="text-[11px] font-mono text-stone-400 mb-1">
+                  {item.period}
+                </p>
+                <p className="text-[13px] font-medium text-stone-900">
+                  {item.role}
+                </p>
+                <p className="text-[12px] text-stone-500 mt-0.5">
+                  {item.company}
+                </p>
+                <p className="text-[12px] text-stone-400 leading-relaxed mt-1.5">
+                  {item.description}
+                </p>
+              </div>
             </div>
           ))}
         </div>

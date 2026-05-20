@@ -1,10 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { Send, Instagram, Linkedin, Mail, Github, ArrowUpRight } from "lucide-react";
 import emailjs from "@emailjs/browser";
+import { db } from "../firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 const Contact = () => {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [links, setLinks] = useState(null);
+
+  useEffect(() => {
+    getDoc(doc(db, "contact", "links")).then((snap) => {
+      if (snap.exists()) setLinks(snap.data());
+    });
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -48,7 +57,7 @@ const Contact = () => {
         <ContactCard
           title="Stay in Touch"
           description="Reach out via email for any inquiries or collaborations."
-          link="mailto:asadmahmudakram@gmail.com"
+          link={`mailto:${links?.email ?? "asadmahmudakram@gmail.com"}`}
           buttonText="Go to Gmail"
           bg="bg-red-50 border border-red-100"
           icon={<Mail size={26} />}
@@ -57,7 +66,7 @@ const Contact = () => {
         <ContactCard
           title="Follow My Journey"
           description="Stay updated with my latest posts and stories on Instagram."
-          link="https://instagram.com/asaddakram"
+          link={links?.instagram ?? "https://instagram.com/asaddakram"}
           buttonText="Go to Instagram"
           bg="bg-gradient-to-br from-purple-100 to-pink-100 border border-pink-100"
           icon={<Instagram size={26} />}
@@ -66,7 +75,7 @@ const Contact = () => {
         <ContactCard
           title="Let's Connect"
           description="Connect for collaboration or explore my professional experience."
-          link="https://linkedin.com/in/asad-mahmud-akram"
+          link={links?.linkedin ?? "https://linkedin.com/in/asad-mahmud-akram"}
           buttonText="Go to LinkedIn"
           bg="bg-blue-50 border border-blue-100"
           icon={<Linkedin size={26} />}
@@ -75,7 +84,7 @@ const Contact = () => {
         <ContactCard
           title="Join the Fun"
           description="Follow me on TikTok for entertaining and engaging content."
-          link="https://www.tiktok.com/@asad-akram"
+          link={links?.tiktok ?? "https://www.tiktok.com/@asad-akram"}
           buttonText="Go to TikTok"
           bg="bg-gray-50 border border-gray-200"
           icon={
@@ -89,7 +98,7 @@ const Contact = () => {
           <ContactCard
             title="Explore the Code"
             description="Explore the source code for all my projects on GitHub."
-            link="https://github.com/asadmahmud22"
+            link={links?.github ?? "https://github.com/asadmahmud22"}
             buttonText="Go to GitHub"
             bg="bg-gray-100 border border-gray-200"
             icon={<Github size={26} />}

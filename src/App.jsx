@@ -17,6 +17,7 @@ import Skills from "./pages/Skills";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import ManageLayout from "./pages/admin/ManageLayout";
 import ManageAchievements from "./pages/admin/ManageAchievements";
 import ManageProjects from "./pages/admin/ManageProjects";
 import ManageAbout from "./pages/admin/ManageAbout";
@@ -44,9 +45,12 @@ function AppRoutes() {
       {/* Admin login — standalone, tanpa sidebar */}
       <Route path="/admin" element={<AdminLogin />} />
 
-      {/* Admin pages — semua pakai AdminLayout */}
+      {/* Admin pages — pakai AdminLayout (auth guard + sidebar) */}
       <Route element={<AdminLayout />}>
-        <Route path="/admin/dashboard"    element={<AdminDashboard />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+
+        {/* Halaman Manage — dibungkus ManageLayout */}
+        <Route path="/admin/layout"       element={<ManageLayout />} />
         <Route path="/admin/home"         element={<ManageHome />} />
         <Route path="/admin/about"        element={<ManageAbout />} />
         <Route path="/admin/skills"       element={<ManageSkills />} />
@@ -58,13 +62,13 @@ function AppRoutes() {
       {/* Portfolio routes */}
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
-        <Route path="about"        element={<About />} />
-        <Route path="achievements" element={<Achievements />} />
-        <Route path="projects"     element={<Projects />} />
-        <Route path="contact"      element={<Contact />} />
-        <Route path="skills"       element={<Skills />} />
-        <Route path="chat"         element={<Chat />} />
-        <Route path="*"            element={<NotFound />} />
+        <Route path="about"         element={<About />} />
+        <Route path="achievements"  element={<Achievements />} />
+        <Route path="projects"      element={<Projects />} />
+        <Route path="contact"       element={<Contact />} />
+        <Route path="skills"        element={<Skills />} />
+        <Route path="chat"          element={<Chat />} />
+        <Route path="*"             element={<NotFound />} />
       </Route>
     </Routes>
   );

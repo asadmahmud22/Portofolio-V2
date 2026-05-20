@@ -9,23 +9,38 @@ import {
   Shield,
   LayoutDashboard,
   ArrowUpRight,
-  Menu,
   ChevronRight,
   User,
   Code,
   Phone,
   Home,
+  LayoutTemplate,
 } from "lucide-react";
 
-const navItems = [
-  { label: "Dashboard", icon: LayoutDashboard, path: "/admin/dashboard" },
-  { label: "Home", icon: Home, path: "/admin/home" },
-  { label: "Achievements", icon: Award, path: "/admin/achievements" },
-  { label: "Projects", icon: Briefcase, path: "/admin/projects" },
-  { label: "About", icon: User, path: "/admin/about" },
-  { label: "Skills", icon: Code, path: "/admin/skills" },
-  { label: "Contact", icon: Phone, path: "/admin/contact" },
+// ─── Nav Config ───────────────────────────────────────────────────────────────
+
+const navGroups = [
+  {
+    label: null,
+    items: [
+      { label: "Dashboard", icon: LayoutDashboard, path: "/admin/dashboard" },
+    ],
+  },
+  {
+    label: "Manage",
+    items: [
+      { label: "Layout",       icon: LayoutTemplate, path: "/admin/layout" },
+      { label: "Home",         icon: Home,           path: "/admin/home" },
+      { label: "About",        icon: User,           path: "/admin/about" },
+      { label: "Skills",       icon: Code,           path: "/admin/skills" },
+      { label: "Achievements", icon: Award,          path: "/admin/achievements" },
+      { label: "Projects",     icon: Briefcase,      path: "/admin/projects" },
+      { label: "Contact",      icon: Phone,          path: "/admin/contact" },
+    ],
+  },
 ];
+
+// ─── AdminLayout ──────────────────────────────────────────────────────────────
 
 const AdminLayout = () => {
   const [user, setUser] = useState(null);
@@ -73,42 +88,51 @@ const AdminLayout = () => {
         </div>
       </div>
 
-      {/* Nav */}
-      <nav className="flex-1 px-3 py-4 space-y-0.5">
-        {navItems.map((item) => {
-          const active = isActive(item.path);
-          return (
-            <button
-              key={item.path}
-              onClick={() => {
-                navigate(item.path);
-                setSidebarOpen(false);
-              }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 group
-                ${
-                  active
-                    ? "bg-stone-900 text-white"
-                    : "text-stone-600 hover:text-stone-900 hover:bg-stone-100"
-                }`}
-            >
-              <item.icon
-                size={16}
-                className={
-                  active
-                    ? "text-white"
-                    : "text-stone-400 group-hover:text-stone-700"
-                }
-              />
-              {item.label}
-              {active && (
-                <ChevronRight size={14} className="ml-auto text-stone-400" />
-              )}
-            </button>
-          );
-        })}
+      {/* Nav Groups */}
+      <nav className="flex-1 px-3 py-4 space-y-4 overflow-y-auto">
+        {navGroups.map((group, gi) => (
+          <div key={gi}>
+            {group.label && (
+              <p className="text-[9px] font-semibold uppercase tracking-widest text-stone-400 px-3 mb-1.5">
+                {group.label}
+              </p>
+            )}
+            <div className="space-y-0.5">
+              {group.items.map((item) => {
+                const active = isActive(item.path);
+                return (
+                  <button
+                    key={item.path}
+                    onClick={() => {
+                      navigate(item.path);
+                      setSidebarOpen(false);
+                    }}
+                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 group
+                      ${active
+                        ? "bg-stone-900 text-white"
+                        : "text-stone-600 hover:text-stone-900 hover:bg-stone-100"
+                      }`}
+                  >
+                    <item.icon
+                      size={16}
+                      className={active ? "text-white" : "text-stone-400 group-hover:text-stone-700"}
+                    />
+                    {item.label}
+                    {active && (
+                      <ChevronRight size={14} className="ml-auto text-stone-400" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+            {gi < navGroups.length - 1 && (
+              <div className="border-t border-stone-100 mt-3" />
+            )}
+          </div>
+        ))}
       </nav>
 
-      {/* User & Logout */}
+      {/* Footer actions */}
       <div className="px-3 py-4 border-t border-stone-200 space-y-1">
         <button
           onClick={() => navigate("/")}
@@ -158,7 +182,7 @@ const AdminLayout = () => {
         </div>
       )}
 
-      {/* Page content via Outlet — passes user, handleLogout, setSidebarOpen as context */}
+      {/* Page content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <Outlet context={{ user, handleLogout, setSidebarOpen }} />
       </div>

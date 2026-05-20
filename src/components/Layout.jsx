@@ -1,59 +1,59 @@
 import { useState, useEffect } from "react";
 import { Code } from "lucide-react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
-import {
-  Home,
-  User,
-  Award,
-  Briefcase,
-  LayoutDashboard,
-  Mail,
-} from "lucide-react";
-const profileImage = "/assets/profile.jpg";
+import { Home, User, Award, Briefcase, Mail } from "lucide-react";
+import { db } from "../firebase";
+import { doc, onSnapshot } from "firebase/firestore";
+
+// ─── Default fallback (sama dengan yang di ManageLayout) ──────────────────────
+const DEFAULT_PROFILE = {
+  name: "As'ad Mahmud Akram",
+  title: "Fullstack Developer",
+  username: "@asadmahmudakram",
+  footerName: "As'ad Mahmud Akram",
+  footerYear: "2025",
+  profileImage: "/assets/profile.jpg",
+};
+
 const Layout = () => {
   const [language, setLanguage] = useState("id");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [profile, setProfile] = useState(DEFAULT_PROFILE);
 
   const toggleLanguage = () => {
     setLanguage((prev) => (prev === "en" ? "id" : "en"));
   };
 
-  // Hide horizontal scrollbar globally
+  // ── Subscribe realtime ke Firestore ──
   useEffect(() => {
-    // Add CSS to hide horizontal scrollbar
-    const style = document.createElement("style");
-    style.textContent = `
-      html, body {
-        overflow-x: hidden;
-        max-width: 100vw;
-      }
-      
-      /* Hide scrollbar for Chrome, Safari and Opera */
-      ::-webkit-scrollbar:horizontal {
-        display: none;
-      }
-      
-      /* Hide horizontal scrollbar for IE, Edge and Firefox */
-      * {
-        -ms-overflow-style: none;  /* IE and Edge */
-        scrollbar-width: none;     /* Firefox */
-      }
-      
-      *::-webkit-scrollbar:horizontal {
-        display: none;
-      }
-    `;
-    document.head.appendChild(style);
-
-    return () => {
-      document.head.removeChild(style);
-    };
+    const unsub = onSnapshot(
+      doc(db, "siteConfig", "layout"),
+      (snap) => {
+        if (snap.exists()) {
+          setProfile({ ...DEFAULT_PROFILE, ...snap.data() });
+        }
+      },
+      (err) => console.error("Layout snapshot error:", err)
+    );
+    return () => unsub();
   }, []);
 
-  // Add custom styles to hide scrollbars
+  // Hide horizontal scrollbar globally
+  useEffect(() => {
+    const style = document.createElement("style");
+    style.textContent = `
+      html, body { overflow-x: hidden; max-width: 100vw; }
+      ::-webkit-scrollbar:horizontal { display: none; }
+      * { -ms-overflow-style: none; scrollbar-width: none; }
+      *::-webkit-scrollbar:horizontal { display: none; }
+    `;
+    document.head.appendChild(style);
+    return () => document.head.removeChild(style);
+  }, []);
+
   const hideScrollbarStyle = {
-    scrollbarWidth: "none", // Firefox
-    msOverflowStyle: "none", // Internet Explorer 10+
+    scrollbarWidth: "none",
+    msOverflowStyle: "none",
     overflowX: "hidden",
     maxWidth: "100vw",
   };
@@ -68,14 +68,14 @@ const Layout = () => {
         <div className="flex items-center gap-2">
           <div className="relative">
             <img
-              src={profileImage}
+              src={profile.profileImage}
               alt="Profile"
               className="w-7 h-7 rounded-full object-cover shadow-sm ring-1 ring-white"
             />
-            <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border border-white"></div>
+            <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border border-white" />
           </div>
           <span className="font-medium text-gray-800 text-sm">
-            As'ad Mahmud A
+            {profile.name.split(" ").slice(0, 3).join(" ")}
           </span>
           <span className="text-blue-500 text-xs">✔</span>
         </div>
@@ -91,9 +91,9 @@ const Layout = () => {
             className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors duration-200"
           >
             <div className="space-y-1">
-              <span className="block w-4 h-0.5 bg-gray-600 rounded-full"></span>
-              <span className="block w-4 h-0.5 bg-gray-600 rounded-full"></span>
-              <span className="block w-4 h-0.5 bg-gray-600 rounded-full"></span>
+              <span className="block w-4 h-0.5 bg-gray-600 rounded-full" />
+              <span className="block w-4 h-0.5 bg-gray-600 rounded-full" />
+              <span className="block w-4 h-0.5 bg-gray-600 rounded-full" />
             </div>
           </button>
         </div>
@@ -101,7 +101,11 @@ const Layout = () => {
 
       {/* Desktop Sidebar */}
       <div className="hidden md:flex w-60 border-r border-gray-200 flex-col fixed h-full bg-white/95 backdrop-blur-sm shadow-sm overflow-x-hidden">
-        <SidebarContent toggleLanguage={toggleLanguage} language={language} />
+        <SidebarContent
+          toggleLanguage={toggleLanguage}
+          language={language}
+          profile={profile}
+        />
       </div>
 
       {/* Mobile Sidebar Overlay */}
@@ -111,18 +115,19 @@ const Layout = () => {
           onClick={() => setIsMenuOpen(false)}
         >
           <div
-            className="w-60 bg-white/95 backdrop-blur-md p-0 flex flex-col h-full text-gray-900 shadow-xl overflow-x-hidden"
+            className="w-60 bg-white/95 backdrop-blur-md flex flex-col h-full text-gray-900 shadow-xl overflow-x-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             <SidebarContent
               toggleLanguage={toggleLanguage}
               language={language}
+              profile={profile}
             />
           </div>
         </div>
       )}
 
-      {/* Main Content Area */}
+      {/* Main Content */}
       <div
         className="md:ml-60 min-h-screen bg-white/30 overflow-x-hidden"
         style={hideScrollbarStyle}
@@ -137,7 +142,9 @@ const Layout = () => {
   );
 };
 
-const SidebarContent = ({ toggleLanguage, language }) => {
+// ─── SidebarContent ───────────────────────────────────────────────────────────
+
+const SidebarContent = ({ toggleLanguage, language, profile }) => {
   const location = useLocation();
 
   return (
@@ -146,23 +153,24 @@ const SidebarContent = ({ toggleLanguage, language }) => {
       <div className="p-5 flex flex-col items-center bg-gradient-to-b from-gray-50/80 to-white/80 border-b border-gray-100">
         <div className="relative w-20 h-20 rounded-full overflow-hidden mb-3 shadow-md ring-2 ring-white/50">
           <img
-            src={profileImage}
+            src={profile.profileImage}
             alt="Profile"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent" />
         </div>
+
         <h2 className="text-lg font-bold text-gray-800 mb-0.5 text-center leading-tight">
-          As'ad Mahmud Akram
+          {profile.name}
         </h2>
-        <h2 className="text-lg font-bold text-gray-800 mb-0.5 text-center leading-tight">
-          Fullstack Developer
+        <h2 className="text-sm font-semibold text-gray-700 mb-0.5 text-center leading-tight">
+          {profile.title}
         </h2>
-        <div className="text-gray-500 text-xs mb-3">@asadmahmudakram</div>
+        <div className="text-gray-500 text-xs mb-3">{profile.username}</div>
 
         <div className="flex items-center gap-2 w-full">
           <button className="hire-me-btn flex items-center justify-center gap-2 bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white px-3 py-2 rounded-lg font-medium shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 flex-1 text-sm">
-            <div className="status-indicator w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse shadow-sm"></div>
+            <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse shadow-sm" />
             Hire me
           </button>
           <button
@@ -174,19 +182,20 @@ const SidebarContent = ({ toggleLanguage, language }) => {
         </div>
       </div>
 
-      {/* Navigation Menu */}
+      {/* Navigation */}
       <nav className="flex-1 px-3 py-2 overflow-y-auto">
         {[
-          { to: "/", label: "Home", icon: Home },
-          { to: "/about", label: "About", icon: User },
-          { to: "/skills", label: "Skills", icon: Code },
-          { to: "/achievements", label: "Achievements", icon: Award },
-          { to: "/projects", label: "Projects", icon: Briefcase },
-          { to: "/contact", label: "Contact", icon: Mail },
-        ].map(({ to, label, icon: Icon }) => (
+          { to: "/",            label: "Home",         icon: Home,     end: true },
+          { to: "/about",       label: "About",        icon: User },
+          { to: "/skills",      label: "Skills",       icon: Code },
+          { to: "/achievements",label: "Achievements", icon: Award },
+          { to: "/projects",    label: "Projects",     icon: Briefcase },
+          { to: "/contact",     label: "Contact",      icon: Mail },
+        ].map(({ to, label, icon: Icon, end }) => (
           <NavLink
             key={to}
             to={to}
+            end={end}
             className={({ isActive }) =>
               `nav-item flex items-center gap-3 px-3 py-2.5 mx-1 my-0.5 rounded-lg transition-all duration-200 text-sm ${
                 isActive
@@ -207,8 +216,8 @@ const SidebarContent = ({ toggleLanguage, language }) => {
       {/* Footer */}
       <div className="p-4 border-t border-gray-100 bg-gradient-to-t from-gray-50/50 to-white/50">
         <div className="text-gray-400 text-xs text-center space-y-0.5">
-          <div className="font-medium">© 2025</div>
-          <div className="leading-tight">As'ad Mahmud Akram</div>
+          <div className="font-medium">© {profile.footerYear}</div>
+          <div className="leading-tight">{profile.footerName}</div>
           <div className="text-gray-300">All rights reserved</div>
         </div>
       </div>

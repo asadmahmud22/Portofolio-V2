@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import { db } from "../../firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
@@ -88,14 +88,67 @@ const Toast = ({ message, type, onClose }) => {
   );
 };
 
+/* ─── Color Preset Picker ─── */
+const PRESET_COLORS = [
+  "#22D3EE","#3B82F6","#818CF8","#A855F7","#C084FC",
+  "#F472B6","#EF4444","#F97316","#FACC15","#22C55E",
+  "#2DD4BF","#EA580C","#CA8A04","#2C2C2A","#94A3B8",
+];
+
+const ColorPicker = ({ value, onChange }) => {
+  const [open, setOpen] = useState(false);
+  const ref = React.useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
+  return (
+    <div className="relative flex-shrink-0" ref={ref}>
+      <button
+        onClick={() => setOpen(p => !p)}
+        title="Ganti warna"
+        className="w-4 h-4 rounded-full border-2 border-white shadow-sm ring-1 ring-stone-200 mt-1 block hover:scale-110 transition-transform"
+        style={{ backgroundColor: value }}
+      />
+      {open && (
+        <div className="absolute left-0 top-6 z-30 bg-white border border-stone-200 rounded-xl shadow-lg p-2.5 w-[148px]">
+          <div className="grid grid-cols-5 gap-1.5 mb-2">
+            {PRESET_COLORS.map(c => (
+              <button
+                key={c}
+                onClick={() => { onChange(c); setOpen(false); }}
+                className={`w-5 h-5 rounded-full border-2 hover:scale-110 transition-transform ${value === c ? "border-stone-700 scale-110" : "border-white shadow-sm ring-1 ring-stone-200"}`}
+                style={{ backgroundColor: c }}
+              />
+            ))}
+          </div>
+          {/* Custom hex input */}
+          <div className="flex items-center gap-1.5 border-t border-stone-100 pt-2">
+            <span className="w-4 h-4 rounded-full flex-shrink-0 border border-stone-200" style={{ backgroundColor: value }} />
+            <input
+              type="text"
+              value={value}
+              onChange={e => { if (/^#[0-9A-Fa-f]{0,6}$/.test(e.target.value)) onChange(e.target.value); }}
+              className="flex-1 text-[10px] font-mono border border-stone-200 rounded px-1.5 py-0.5 outline-none focus:border-stone-400 w-0"
+              maxLength={7}
+              placeholder="#000000"
+            />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 /* ─── Skill Row ─── */
 const SkillRow = ({ skill, onUpdate, onDelete }) => (
   <div className="flex items-start gap-2.5 bg-white border border-stone-200 rounded-lg px-3 py-2 hover:border-stone-300 group transition-colors">
     <GripVertical size={12} className="text-stone-200 mt-1 flex-shrink-0 cursor-grab" />
-    <label className="mt-1 flex-shrink-0 cursor-pointer" title="Ganti warna">
-      <span className="w-2.5 h-2.5 rounded-full block border border-stone-200/80" style={{ backgroundColor: skill.dot }} />
-      <input type="color" value={skill.dot} onChange={e => onUpdate("dot", e.target.value)} className="sr-only" />
-    </label>
+    <ColorPicker value={skill.dot} onChange={v => onUpdate("dot", v)} />
     <div className="flex-1 min-w-0">
       <Editable value={skill.name} onChange={v => onUpdate("name", v)}
         placeholder="Nama skill" className="text-[12px] font-medium text-stone-900 block" />
@@ -202,7 +255,7 @@ const TimelineItem = ({ item, isLast, onUpdate, onDelete }) => (
    MAIN PAGE
 ═══════════════════════════════════════ */
 const ManageSkills = () => {
-  const {  setSidebarOpen } = useOutletContext();
+  const { setSidebarOpen } = useOutletContext();
 
   const [skills,     setSkills]     = useState([]);
   const [additional, setAdditional] = useState([]);

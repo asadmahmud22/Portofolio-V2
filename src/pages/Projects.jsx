@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { BadgeCheck, Link as LinkIcon, X, FolderOpen } from "lucide-react";
+import React, { useEffect, useState, useRef } from "react";
+import { BadgeCheck, Link as LinkIcon, X, FolderOpen, ChevronLeft, ChevronRight } from "lucide-react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 
@@ -28,6 +28,136 @@ const techIcons = {
   mongodb: "/icons/mongodb.svg",
 };
 
+// ─── Image Slider Component ───────────────────────────────────────────────────
+const ImageSlider = ({ images = [], alt = "" }) => {
+  const [current, setCurrent] = useState(0);
+  const touchStartX = useRef(null);
+
+  // Normalize: support old single `img` string or new `images` array
+  const slides = images.length > 0 ? images : [];
+
+  if (slides.length === 0) return null;
+
+  const prev = (e) => {
+    e?.stopPropagation();
+    setCurrent((c) => (c - 1 + slides.length) % slides.length);
+  };
+
+  const next = (e) => {
+    e?.stopPropagation();
+    setCurrent((c) => (c + 1) % slides.length);
+  };
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) diff > 0 ? next() : prev();
+    touchStartX.current = null;
+  };
+
+  return (
+    <div
+      className="relative w-full select-none overflow-hidden bg-stone-100"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* Slides */}
+      <div
+        className="flex transition-transform duration-300 ease-in-out"
+        style={{ transform: `translateX(-${current * 100}%)` }}
+      >
+        {slides.map((src, i) => (
+          <img
+            key={i}
+            src={src}
+            alt={`${alt} ${i + 1}`}
+            className="w-full shrink-0 object-cover max-h-[55vh]"
+            draggable={false}
+          />
+        ))}
+      </div>
+
+      {/* Nav buttons — only show if more than 1 image */}
+      {slides.length > 1 && (
+        <>
+          <button
+            onClick={prev}
+            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur-sm hover:bg-white text-stone-700 rounded-full shadow-md border border-stone-200 transition"
+          >
+            <ChevronLeft size={16} />
+          </button>
+          <button
+            onClick={next}
+            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur-sm hover:bg-white text-stone-700 rounded-full shadow-md border border-stone-200 transition"
+          >
+            <ChevronRight size={16} />
+          </button>
+
+          {/* Dots */}
+          <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+            {slides.map((_, i) => (
+              <button
+                key={i}
+                onClick={(e) => { e.stopPropagation(); setCurrent(i); }}
+                className={`rounded-full transition-all duration-200 ${
+                  i === current
+                    ? "w-4 h-1.5 bg-white"
+                    : "w-1.5 h-1.5 bg-white/50 hover:bg-white/80"
+                }`}
+              />
+            ))}
+          </div>
+
+          {/* Counter */}
+          <div className="absolute top-2.5 left-2.5 z-10 bg-black/40 text-white text-[11px] px-2 py-0.5 rounded-full backdrop-blur-sm">
+            {current + 1} / {slides.length}
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
+// ─── Thumbnail (card) — shows first image only ────────────────────────────────
+const CardThumbnail = ({ project }) => {
+  const images = project.images?.length > 0
+    ? project.images
+    : project.img ? [project.img] : [];
+
+  return (
+    <div className="relative w-full h-40 bg-stone-200 overflow-hidden flex items-center justify-center">
+      {images.length > 0 ? (
+        <>
+          <img
+            src={images[0]}
+            alt={project.title}
+            className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-300"
+          />
+          {images.length > 1 && (
+            <div className="absolute bottom-2 right-2 bg-black/50 text-white text-[10px] px-1.5 py-0.5 rounded-full backdrop-blur-sm">
+              +{images.length - 1} foto
+            </div>
+          )}
+        </>
+      ) : (
+        <span className="text-xs text-stone-400 font-mono">no image</span>
+      )}
+
+      {project.featured && (
+        <div className="absolute top-2.5 right-2.5 inline-flex items-center gap-1 bg-blue-600 text-blue-50 text-[11px] font-medium px-2.5 py-1 rounded-full">
+          <BadgeCheck size={11} />
+          Featured
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ─── Main Projects Component ──────────────────────────────────────────────────
 const Projects = () => {
   const [projects, setProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -48,6 +178,13 @@ const Projects = () => {
     };
     fetchProjects();
   }, []);
+
+  // Normalize images for modal
+  const getModalImages = (project) => {
+    if (project.images?.length > 0) return project.images;
+    if (project.img) return [project.img];
+    return [];
+  };
 
   return (
     <div className="max-w-6xl mx-auto px-4 bg-white text-black">
@@ -84,25 +221,7 @@ const Projects = () => {
               onClick={() => setModal(project)}
               className="group relative flex flex-col bg-stone-50 border border-stone-200 rounded-xl overflow-hidden cursor-pointer hover:border-stone-300 hover:shadow-md transition-all duration-200"
             >
-              {/* Thumbnail */}
-              <div className="relative w-full h-40 bg-stone-200 overflow-hidden flex items-center justify-center">
-                {project.img ? (
-                  <img
-                    src={project.img}
-                    alt={project.title}
-                    className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-300"
-                  />
-                ) : (
-                  <span className="text-xs text-stone-400 font-mono">no image</span>
-                )}
-
-                {project.featured && (
-                  <div className="absolute top-2.5 right-2.5 inline-flex items-center gap-1 bg-blue-600 text-blue-50 text-[11px] font-medium px-2.5 py-1 rounded-full">
-                    <BadgeCheck size={11} />
-                    Featured
-                  </div>
-                )}
-              </div>
+              <CardThumbnail project={project} />
 
               {/* Body */}
               <div className="flex flex-col flex-1 p-3.5 gap-1">
@@ -160,18 +279,16 @@ const Projects = () => {
           >
             <button
               onClick={() => setModal(null)}
-              className="absolute top-3 right-3 z-10 p-1.5 bg-white rounded-lg border border-stone-200 text-stone-500 hover:text-stone-900 hover:border-stone-300 transition"
+              className="absolute top-3 right-3 z-20 p-1.5 bg-white rounded-lg border border-stone-200 text-stone-500 hover:text-stone-900 hover:border-stone-300 transition"
             >
               <X size={14} />
             </button>
 
-            {modal.img && (
-              <img
-                src={modal.img}
-                alt={modal.title}
-                className="w-full object-cover max-h-[55vh]"
-              />
-            )}
+            {/* Image Slider */}
+            <ImageSlider
+              images={getModalImages(modal)}
+              alt={modal.title}
+            />
 
             <div className="p-5 text-black">
               <div className="flex items-center gap-2.5 mb-1.5">
@@ -217,8 +334,8 @@ const Projects = () => {
               {(modal.liveUrl || modal.githubUrl) && (
                 <div className="flex gap-5 mt-4 pt-3 border-t border-stone-100">
                   {modal.liveUrl && (
-                    
-                    <a href={modal.liveUrl}
+                    <a
+                      href={modal.liveUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1.5 text-[12px] font-medium text-sky-500 hover:text-sky-600 transition-colors"
@@ -227,8 +344,8 @@ const Projects = () => {
                     </a>
                   )}
                   {modal.githubUrl && (
-                    
-                    <a href={modal.githubUrl}
+                    <a
+                      href={modal.githubUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1.5 text-[12px] font-medium text-stone-500 hover:text-stone-800 transition-colors"

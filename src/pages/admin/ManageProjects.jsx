@@ -22,6 +22,8 @@ import {
   Filter,
   Star,
   Menu,
+  ImagePlus,
+  GripVertical,
 } from "lucide-react";
 
 const CATEGORIES = [
@@ -54,13 +56,108 @@ const emptyForm = {
   tech: [],
   liveUrl: "",
   githubUrl: "",
-  img: "",
+  images: [],   // NEW: array of image URLs
+  img: "",      // kept for backward compat (first image)
   featured: false,
 };
 
 const inputCls =
   "w-full border border-stone-200 rounded-lg px-3 py-2 text-sm text-stone-900 placeholder:text-stone-400 bg-white focus:outline-none focus:ring-2 focus:ring-stone-800 focus:border-transparent transition";
 
+// ─── Multi-image input component ─────────────────────────────────────────────
+const MultiImageInput = ({ images, onChange }) => {
+  const [newUrl, setNewUrl] = useState("");
+
+  const addImage = () => {
+    const trimmed = newUrl.trim();
+    if (!trimmed) return;
+    onChange([...images, trimmed]);
+    setNewUrl("");
+  };
+
+  const removeImage = (index) => {
+    onChange(images.filter((_, i) => i !== index));
+  };
+
+  const moveUp = (index) => {
+    if (index === 0) return;
+    const next = [...images];
+    [next[index - 1], next[index]] = [next[index], next[index - 1]];
+    onChange(next);
+  };
+
+  const moveDown = (index) => {
+    if (index === images.length - 1) return;
+    const next = [...images];
+    [next[index], next[index + 1]] = [next[index + 1], next[index]];
+    onChange(next);
+  };
+
+  return (
+    <div className="space-y-2">
+      {/* Preview list */}
+      {images.length > 0 && (
+        <div className="space-y-2">
+          {images.map((url, i) => (
+            <div key={i} className="flex items-center gap-2 bg-stone-50 border border-stone-200 rounded-lg p-2">
+              <img
+                src={url}
+                alt={`img-${i}`}
+                className="w-14 h-10 object-cover rounded-md border border-stone-200 shrink-0"
+                onError={(e) => { e.target.src = ""; e.target.style.display = "none"; }}
+              />
+              <span className="flex-1 text-[11px] text-stone-500 truncate">{url}</span>
+              <div className="flex items-center gap-1 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => moveUp(i)}
+                  disabled={i === 0}
+                  title="Pindah ke atas"
+                  className="p-1 text-stone-400 hover:text-stone-700 disabled:opacity-30 transition"
+                >
+                  <GripVertical size={12} className="rotate-0" />
+                </button>
+                <span className="text-[10px] text-stone-400 font-mono w-4 text-center">{i + 1}</span>
+                <button
+                  type="button"
+                  onClick={() => removeImage(i)}
+                  title="Hapus gambar"
+                  className="p-1 text-stone-400 hover:text-rose-500 transition"
+                >
+                  <X size={13} />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Add new URL */}
+      <div className="flex gap-2">
+        <input
+          type="text"
+          placeholder="/projects/nama-file.jpg atau https://..."
+          value={newUrl}
+          onChange={(e) => setNewUrl(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addImage())}
+          className={inputCls}
+        />
+        <button
+          type="button"
+          onClick={addImage}
+          className="flex items-center gap-1.5 px-3 py-2 bg-stone-900 text-white text-xs rounded-lg hover:bg-stone-700 transition shrink-0"
+        >
+          <ImagePlus size={13} /> Tambah
+        </button>
+      </div>
+      <p className="text-xs text-stone-400">
+        Gambar pertama tampil sebagai thumbnail kartu. Urutan dapat diubah dengan tombol angka.
+      </p>
+    </div>
+  );
+};
+
+// ─── Main Component ───────────────────────────────────────────────────────────
 const ManageProjects = () => {
   const { setSidebarOpen } = useOutletContext();
 
@@ -93,6 +190,14 @@ const ManageProjects = () => {
   const handleAdd = () => { setForm(emptyForm); setEditId(null); setShowModal(true); };
 
   const handleEdit = (item) => {
+    // Migrate old `img` string to `images` array if needed
+    const existingImages =
+      item.images?.length > 0
+        ? item.images
+        : item.img
+        ? [item.img]
+        : [];
+
     setForm({
       title:       item.title       || "",
       description: item.description || "",
@@ -100,7 +205,8 @@ const ManageProjects = () => {
       tech:        item.tech        || [],
       liveUrl:     item.liveUrl     || "",
       githubUrl:   item.githubUrl   || "",
-      img:         item.img         || "",
+      images:      existingImages,
+      img:         existingImages[0] || "",
       featured:    item.featured    || false,
     });
     setEditId(item.id);
@@ -113,11 +219,18 @@ const ManageProjects = () => {
       return;
     }
     setIsSaving(true);
+
+    // Always sync `img` = first image for backward compat
+    const payload = {
+      ...form,
+      img: form.images[0] || "",
+    };
+
     try {
       if (editId) {
-        await updateDoc(doc(db, "projects", editId), { ...form });
+        await updateDoc(doc(db, "projects", editId), payload);
       } else {
-        await addDoc(collection(db, "projects"), { ...form });
+        await addDoc(collection(db, "projects"), payload);
       }
       await fetchProjects();
       setShowModal(false);
@@ -140,6 +253,10 @@ const ManageProjects = () => {
       setIsDeleting(null);
     }
   };
+
+  // Helper: get first image from project (supports both old & new schema)
+  const getThumb = (item) =>
+    item.images?.[0] || item.img || null;
 
   const filtered = projects.filter((p) => {
     const matchSearch =
@@ -227,81 +344,92 @@ const ManageProjects = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-stone-50">
-                  {filtered.map((item) => (
-                    <tr key={item.id} className="hover:bg-stone-50/70 transition-colors group">
-                      <td className="px-5 py-3">
-                        {item.img ? (
-                          <img src={item.img} alt={item.title} className="w-12 h-10 object-cover rounded-lg border border-stone-200 shadow-sm" />
-                        ) : (
-                          <div className="w-12 h-10 bg-stone-100 rounded-lg border border-stone-200 flex items-center justify-center">
-                            <FolderKanban size={14} className="text-stone-300" />
+                  {filtered.map((item) => {
+                    const thumb = getThumb(item);
+                    const imgCount = item.images?.length || (item.img ? 1 : 0);
+                    return (
+                      <tr key={item.id} className="hover:bg-stone-50/70 transition-colors group">
+                        <td className="px-5 py-3">
+                          <div className="relative">
+                            {thumb ? (
+                              <img src={thumb} alt={item.title} className="w-12 h-10 object-cover rounded-lg border border-stone-200 shadow-sm" />
+                            ) : (
+                              <div className="w-12 h-10 bg-stone-100 rounded-lg border border-stone-200 flex items-center justify-center">
+                                <FolderKanban size={14} className="text-stone-300" />
+                              </div>
+                            )}
+                            {imgCount > 1 && (
+                              <span className="absolute -bottom-1 -right-1 bg-stone-700 text-white text-[9px] px-1 rounded-full font-mono">
+                                {imgCount}
+                              </span>
+                            )}
                           </div>
-                        )}
-                      </td>
-                      <td className="px-5 py-3">
-                        <div className="flex items-center gap-1.5 mb-0.5">
-                          <p className="font-semibold text-stone-800 line-clamp-1 max-w-[180px]">{item.title}</p>
-                          {item.featured && (
-                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-amber-50 text-amber-600 border border-amber-200 rounded-full text-xs font-medium shrink-0">
-                              <Star size={9} className="fill-amber-500 text-amber-500" /> Featured
-                            </span>
-                          )}
-                        </div>
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${CATEGORY_COLORS[item.category] || "bg-stone-100 text-stone-600 border border-stone-200"}`}>
-                          {item.category}
-                        </span>
-                      </td>
-                      <td className="px-5 py-3">
-                        <p className="text-stone-500 text-xs line-clamp-2 max-w-sm leading-relaxed">
-                          {item.description || <span className="italic text-stone-300">—</span>}
-                        </p>
-                      </td>
-                      <td className="px-5 py-3">
-                        <div className="flex flex-wrap gap-1 max-w-[200px]">
-                          {(item.tech || []).slice(0, 4).map((t) => (
-                            <span key={t} className="px-2 py-0.5 bg-stone-100 text-stone-600 border border-stone-200 rounded-full text-xs">{t}</span>
-                          ))}
-                          {(item.tech || []).length > 4 && (
-                            <span className="px-2 py-0.5 bg-stone-100 text-stone-400 rounded-full text-xs">+{item.tech.length - 4}</span>
-                          )}
-                          {(!item.tech || item.tech.length === 0) && (
-                            <span className="text-xs text-stone-300 italic">—</span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-5 py-3">
-                        <div className="flex flex-col gap-1">
-                          {item.liveUrl && (
-                            <a href={item.liveUrl} target="_blank" rel="noreferrer"
-                              className="inline-flex items-center gap-1 text-xs text-sky-500 hover:text-sky-700 transition-colors">
-                              <Globe size={11} /> Live
-                            </a>
-                          )}
-                          {item.githubUrl && (
-                            <a href={item.githubUrl} target="_blank" rel="noreferrer"
-                              className="inline-flex items-center gap-1 text-xs text-stone-500 hover:text-stone-800 transition-colors">
-                              <Github size={11} /> GitHub
-                            </a>
-                          )}
-                          {!item.liveUrl && !item.githubUrl && <span className="text-xs text-stone-300 italic">—</span>}
-                        </div>
-                      </td>
-                      <td className="px-5 py-3">
-                        <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button onClick={() => handleEdit(item)} title="Edit"
-                            className="p-1.5 text-stone-500 hover:text-sky-600 hover:bg-sky-50 rounded-lg transition-colors">
-                            <Pencil size={14} />
-                          </button>
-                          <button onClick={() => handleDelete(item.id)} disabled={isDeleting === item.id} title="Hapus"
-                            className="p-1.5 text-stone-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors disabled:opacity-40">
-                            {isDeleting === item.id
-                              ? <div className="w-3.5 h-3.5 border-2 border-rose-300 border-t-rose-500 rounded-full animate-spin" />
-                              : <Trash2 size={14} />}
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                        </td>
+                        <td className="px-5 py-3">
+                          <div className="flex items-center gap-1.5 mb-0.5">
+                            <p className="font-semibold text-stone-800 line-clamp-1 max-w-[180px]">{item.title}</p>
+                            {item.featured && (
+                              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-amber-50 text-amber-600 border border-amber-200 rounded-full text-xs font-medium shrink-0">
+                                <Star size={9} className="fill-amber-500 text-amber-500" /> Featured
+                              </span>
+                            )}
+                          </div>
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${CATEGORY_COLORS[item.category] || "bg-stone-100 text-stone-600 border border-stone-200"}`}>
+                            {item.category}
+                          </span>
+                        </td>
+                        <td className="px-5 py-3">
+                          <p className="text-stone-500 text-xs line-clamp-2 max-w-sm leading-relaxed">
+                            {item.description || <span className="italic text-stone-300">—</span>}
+                          </p>
+                        </td>
+                        <td className="px-5 py-3">
+                          <div className="flex flex-wrap gap-1 max-w-[200px]">
+                            {(item.tech || []).slice(0, 4).map((t) => (
+                              <span key={t} className="px-2 py-0.5 bg-stone-100 text-stone-600 border border-stone-200 rounded-full text-xs">{t}</span>
+                            ))}
+                            {(item.tech || []).length > 4 && (
+                              <span className="px-2 py-0.5 bg-stone-100 text-stone-400 rounded-full text-xs">+{item.tech.length - 4}</span>
+                            )}
+                            {(!item.tech || item.tech.length === 0) && (
+                              <span className="text-xs text-stone-300 italic">—</span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-5 py-3">
+                          <div className="flex flex-col gap-1">
+                            {item.liveUrl && (
+                              <a href={item.liveUrl} target="_blank" rel="noreferrer"
+                                className="inline-flex items-center gap-1 text-xs text-sky-500 hover:text-sky-700 transition-colors">
+                                <Globe size={11} /> Live
+                              </a>
+                            )}
+                            {item.githubUrl && (
+                              <a href={item.githubUrl} target="_blank" rel="noreferrer"
+                                className="inline-flex items-center gap-1 text-xs text-stone-500 hover:text-stone-800 transition-colors">
+                                <Github size={11} /> GitHub
+                              </a>
+                            )}
+                            {!item.liveUrl && !item.githubUrl && <span className="text-xs text-stone-300 italic">—</span>}
+                          </div>
+                        </td>
+                        <td className="px-5 py-3">
+                          <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button onClick={() => handleEdit(item)} title="Edit"
+                              className="p-1.5 text-stone-500 hover:text-sky-600 hover:bg-sky-50 rounded-lg transition-colors">
+                              <Pencil size={14} />
+                            </button>
+                            <button onClick={() => handleDelete(item.id)} disabled={isDeleting === item.id} title="Hapus"
+                              className="p-1.5 text-stone-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors disabled:opacity-40">
+                              {isDeleting === item.id
+                                ? <div className="w-3.5 h-3.5 border-2 border-rose-300 border-t-rose-500 rounded-full animate-spin" />
+                                : <Trash2 size={14} />}
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -352,15 +480,18 @@ const ManageProjects = () => {
               [&::-webkit-scrollbar-thumb]:rounded-full
               [&::-webkit-scrollbar-thumb:hover]:bg-stone-300">
 
-              {/* Image */}
+              {/* ── Multi-image input (NEW) ── */}
               <div>
-                <label className="block text-xs font-semibold text-stone-600 uppercase tracking-wider mb-2">URL Gambar Project</label>
-                {form.img && (
-                  <img src={form.img} alt="preview" className="w-full h-40 object-cover rounded-xl border border-stone-200 mb-2.5 shadow-sm" />
-                )}
-                <input type="text" placeholder="/projects/nama-file.jpg" value={form.img}
-                  onChange={(e) => setForm({ ...form, img: e.target.value })} className={inputCls} />
-                <p className="text-xs text-stone-400 mt-1">Taruh gambar di folder <code>public/projects/</code> lalu isi path-nya.</p>
+                <label className="block text-xs font-semibold text-stone-600 uppercase tracking-wider mb-2">
+                  Gambar Project
+                  <span className="ml-1.5 text-stone-400 font-normal normal-case">
+                    ({form.images.length} gambar)
+                  </span>
+                </label>
+                <MultiImageInput
+                  images={form.images}
+                  onChange={(imgs) => setForm({ ...form, images: imgs })}
+                />
               </div>
 
               {/* Title */}

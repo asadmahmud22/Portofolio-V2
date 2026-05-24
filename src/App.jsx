@@ -12,7 +12,6 @@ import About from "./pages/About";
 import Achievements from "./pages/Achievements";
 import Projects from "./pages/Projects";
 import Contact from "./pages/Contact";
-import Chat from "./pages/Chat";
 import Skills from "./pages/Skills";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminLayout from "./pages/admin/AdminLayout";
@@ -67,7 +66,6 @@ function AppRoutes() {
         <Route path="projects"      element={<Projects />} />
         <Route path="contact"       element={<Contact />} />
         <Route path="skills"        element={<Skills />} />
-        <Route path="chat"          element={<Chat />} />
         <Route path="*"             element={<NotFound />} />
       </Route>
     </Routes>

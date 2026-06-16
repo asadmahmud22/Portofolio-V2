@@ -1,41 +1,163 @@
 import React, { useEffect, useState, useRef } from "react";
-import { BadgeCheck, Link as LinkIcon, X, FolderOpen, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  BadgeCheck,
+  Link as LinkIcon,
+  X,
+  FolderOpen,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 
-const techIcons = {
-  html: "/icons/html.svg",
-  css: "/icons/css.svg",
-  php: "/icons/php.svg",
-  ts: "/icons/ts.svg",
-  mysql: "/icons/mysql.svg",
-  js: "/icons/js.svg",
-  react: "/icons/react.svg",
-  vue: "/icons/vue.svg",
-  next: "/icons/nextjs.svg",
-  tailwind: "/icons/tailwind.svg",
-  vercel: "/icons/vercel.svg",
-  infinity: "/icons/infinity.svg",
-  eslint: "/icons/eslint.svg",
-  vite: "/icons/vite.svg",
-  kotlin: "/icons/kotlin.svg",
-  figma: "/icons/figma.svg",
-  sqlite: "/icons/sqlite.svg",
-  firebase: "/icons/firebase.svg",
-  laravel: "/icons/laravel.svg",
-  python: "/icons/python.svg",
-  nodejs: "/icons/nodejs.svg",
-  mongodb: "/icons/mongodb.svg",
+const techMeta = {
+  js: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
+    label: "JavaScript",
+  },
+  javascript: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
+    label: "JavaScript",
+  },
+  ts: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",
+    label: "TypeScript",
+  },
+  typescript: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",
+    label: "TypeScript",
+  },
+  react: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
+    label: "React.js",
+  },
+  "react.js": {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
+    label: "React.js",
+  },
+  reactjs: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
+    label: "React.js",
+  },
+  next: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg",
+    label: "Next.js",
+  },
+  "next.js": {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg",
+    label: "Next.js",
+  },
+  nextjs: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg",
+    label: "Next.js",
+  },
+  tailwind: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg",
+    label: "Tailwind CSS",
+  },
+  "tailwind css": {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg",
+    label: "Tailwind CSS",
+  },
+  tailwindcss: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg",
+    label: "Tailwind CSS",
+  },
+  html: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg",
+    label: "HTML",
+  },
+  "html/css": {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg",
+    label: "HTML/CSS",
+  },
+  css: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg",
+    label: "CSS",
+  },
+  php: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg",
+    label: "PHP",
+  },
+  laravel: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/laravel/laravel-original.svg",
+    label: "Laravel",
+  },
+  python: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
+    label: "Python",
+  },
+  nodejs: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
+    label: "Node.js",
+  },
+  "node.js": {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
+    label: "Node.js",
+  },
+  node: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
+    label: "Node.js",
+  },
+  mysql: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg",
+    label: "MySQL",
+  },
+  mongodb: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg",
+    label: "MongoDB",
+  },
+  sqlite: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg",
+    label: "SQLite",
+  },
+  firebase: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg",
+    label: "Firebase",
+  },
+  vue: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg",
+    label: "Vue.js",
+  },
+  "vue.js": {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg",
+    label: "Vue.js",
+  },
+  vuejs: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg",
+    label: "Vue.js",
+  },
+  kotlin: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kotlin/kotlin-original.svg",
+    label: "Kotlin",
+  },
+  figma: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg",
+    label: "Figma",
+  },
+  vite: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vite/vite-original.svg",
+    label: "Vite",
+  },
+  git: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg",
+    label: "Git",
+  },
+  docker: {
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg",
+    label: "Docker",
+  },
 };
 
-// ─── Image Slider Component ───────────────────────────────────────────────────
+// ─── Helper ───────────────────────────────────────────────────────────────────
+const getTechMeta = (tech) => techMeta[tech.toLowerCase().trim()] ?? null;
+
+// ─── Image Slider ─────────────────────────────────────────────────────────────
 const ImageSlider = ({ images = [], alt = "" }) => {
   const [current, setCurrent] = useState(0);
   const touchStartX = useRef(null);
 
-  // Normalize: support old single `img` string or new `images` array
   const slides = images.length > 0 ? images : [];
-
   if (slides.length === 0) return null;
 
   const prev = (e) => {
@@ -65,7 +187,6 @@ const ImageSlider = ({ images = [], alt = "" }) => {
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Slides */}
       <div
         className="flex transition-transform duration-300 ease-in-out"
         style={{ transform: `translateX(-${current * 100}%)` }}
@@ -81,7 +202,6 @@ const ImageSlider = ({ images = [], alt = "" }) => {
         ))}
       </div>
 
-      {/* Nav buttons — only show if more than 1 image */}
       {slides.length > 1 && (
         <>
           <button
@@ -97,12 +217,14 @@ const ImageSlider = ({ images = [], alt = "" }) => {
             <ChevronRight size={16} />
           </button>
 
-          {/* Dots */}
           <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
             {slides.map((_, i) => (
               <button
                 key={i}
-                onClick={(e) => { e.stopPropagation(); setCurrent(i); }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCurrent(i);
+                }}
                 className={`rounded-full transition-all duration-200 ${
                   i === current
                     ? "w-4 h-1.5 bg-white"
@@ -112,7 +234,6 @@ const ImageSlider = ({ images = [], alt = "" }) => {
             ))}
           </div>
 
-          {/* Counter */}
           <div className="absolute top-2.5 left-2.5 z-10 bg-black/40 text-white text-[11px] px-2 py-0.5 rounded-full backdrop-blur-sm">
             {current + 1} / {slides.length}
           </div>
@@ -122,11 +243,14 @@ const ImageSlider = ({ images = [], alt = "" }) => {
   );
 };
 
-// ─── Thumbnail (card) — shows first image only ────────────────────────────────
+// ─── Card Thumbnail ───────────────────────────────────────────────────────────
 const CardThumbnail = ({ project }) => {
-  const images = project.images?.length > 0
-    ? project.images
-    : project.img ? [project.img] : [];
+  const images =
+    project.images?.length > 0
+      ? project.images
+      : project.img
+        ? [project.img]
+        : [];
 
   return (
     <div className="relative w-full h-40 bg-stone-200 overflow-hidden flex items-center justify-center">
@@ -157,7 +281,25 @@ const CardThumbnail = ({ project }) => {
   );
 };
 
-// ─── Main Projects Component ──────────────────────────────────────────────────
+// ─── Tech Badge ───────────────────────────────────────────────────────────────
+const TechBadge = ({ tech, size = 18 }) => {
+  const meta = getTechMeta(tech);
+  return meta ? (
+    <img
+      src={meta.icon}
+      alt={meta.label}
+      title={meta.label}
+      style={{ width: size, height: size }}
+      className="object-contain opacity-80"
+    />
+  ) : (
+    <span className="text-[11px] bg-white border border-stone-200 text-stone-500 px-2 py-0.5 rounded-full">
+      {tech}
+    </span>
+  );
+};
+
+// ─── Main Component ───────────────────────────────────────────────────────────
 const Projects = () => {
   const [projects, setProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -167,7 +309,10 @@ const Projects = () => {
     const fetchProjects = async () => {
       try {
         const snapshot = await getDocs(collection(db, "projects"));
-        const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        const data = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
         data.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
         setProjects(data);
       } catch (err) {
@@ -179,7 +324,6 @@ const Projects = () => {
     fetchProjects();
   }, []);
 
-  // Normalize images for modal
   const getModalImages = (project) => {
     if (project.images?.length > 0) return project.images;
     if (project.img) return [project.img];
@@ -192,7 +336,8 @@ const Projects = () => {
       <div className="mb-6">
         <h1 className="text-2xl font-medium tracking-tight mb-1.5">Projects</h1>
         <p className="text-stone-400 text-sm max-w-lg leading-relaxed">
-          Beberapa proyek yang telah saya kerjakan, baik proyek swasta maupun proyek sumber terbuka.
+          Beberapa proyek yang telah saya kerjakan, baik proyek swasta maupun
+          proyek sumber terbuka.
         </p>
         <div className="border-t border-stone-200 mt-4" />
       </div>
@@ -223,7 +368,6 @@ const Projects = () => {
             >
               <CardThumbnail project={project} />
 
-              {/* Body */}
               <div className="flex flex-col flex-1 p-3.5 gap-1">
                 <h3 className="text-[13px] font-medium text-stone-900 leading-snug">
                   {project.title}
@@ -240,25 +384,10 @@ const Projects = () => {
                 </p>
 
                 {project.tech?.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mt-auto pt-3 border-t border-stone-200 mt-3">
-                    {project.tech.map((tech, index) =>
-                      techIcons[tech.toLowerCase()] ? (
-                        <img
-                          key={index}
-                          src={techIcons[tech.toLowerCase()]}
-                          alt={tech}
-                          title={tech}
-                          className="w-[18px] h-[18px] object-contain opacity-80"
-                        />
-                      ) : (
-                        <span
-                          key={index}
-                          className="text-[11px] bg-white border border-stone-200 text-stone-500 px-2 py-0.5 rounded-full"
-                        >
-                          {tech}
-                        </span>
-                      )
-                    )}
+                  <div className="flex flex-wrap items-center gap-1.5 mt-auto pt-3 border-t border-stone-200 mt-3">
+                    {project.tech.map((tech, index) => (
+                      <TechBadge key={index} tech={tech} size={18} />
+                    ))}
                   </div>
                 )}
               </div>
@@ -284,15 +413,13 @@ const Projects = () => {
               <X size={14} />
             </button>
 
-            {/* Image Slider */}
-            <ImageSlider
-              images={getModalImages(modal)}
-              alt={modal.title}
-            />
+            <ImageSlider images={getModalImages(modal)} alt={modal.title} />
 
             <div className="p-5 text-black">
               <div className="flex items-center gap-2.5 mb-1.5">
-                <h3 className="text-sm font-medium text-stone-900">{modal.title}</h3>
+                <h3 className="text-sm font-medium text-stone-900">
+                  {modal.title}
+                </h3>
                 {modal.featured && (
                   <span className="inline-flex items-center gap-1 bg-blue-600 text-blue-50 text-[11px] font-medium px-2.5 py-0.5 rounded-full shrink-0">
                     <BadgeCheck size={11} /> Featured
@@ -306,28 +433,15 @@ const Projects = () => {
                 </span>
               )}
 
-              <p className="text-sm text-stone-500 leading-relaxed">{modal.description}</p>
+              <p className="text-sm text-stone-500 leading-relaxed">
+                {modal.description}
+              </p>
 
               {modal.tech?.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-4 pt-3 border-t border-stone-100">
-                  {modal.tech.map((tech, index) =>
-                    techIcons[tech.toLowerCase()] ? (
-                      <img
-                        key={index}
-                        src={techIcons[tech.toLowerCase()]}
-                        alt={tech}
-                        title={tech}
-                        className="w-5 h-5 object-contain opacity-80"
-                      />
-                    ) : (
-                      <span
-                        key={index}
-                        className="text-[11px] bg-stone-100 border border-stone-200 text-stone-500 px-2.5 py-0.5 rounded-full"
-                      >
-                        {tech}
-                      </span>
-                    )
-                  )}
+                <div className="flex flex-wrap items-center gap-2 mt-4 pt-3 border-t border-stone-100">
+                  {modal.tech.map((tech, index) => (
+                    <TechBadge key={index} tech={tech} size={20} />
+                  ))}
                 </div>
               )}
 

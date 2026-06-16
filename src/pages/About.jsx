@@ -32,13 +32,13 @@ const About = () => {
 
   const toggleCareerResponsibilities = (index) => {
     setVisibleCareerIndexes((prev) =>
-      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
     );
   };
 
   const toggleEduResponsibilities = (index) => {
     setVisibleEduIndexes((prev) =>
-      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
     );
   };
 
@@ -55,20 +55,26 @@ const About = () => {
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-medium tracking-tight mb-1.5">About</h1>
-        <p className="text-stone-400 text-sm">Sebuah cerita pendek tentang saya</p>
+        <p className="text-stone-400 text-sm">
+          Sebuah cerita pendek tentang saya
+        </p>
         <div className="border-t border-stone-200 mt-4" />
       </div>
 
       {/* Bio */}
       {bio && (
-        <p className="text-[13.5px] text-stone-500 leading-relaxed max-w-2xl mb-10">
+        <div className="text-gray-700 space-y-3 sm:space-y-3 text-sm sm:text-base leading-relaxed mb-10">
           {bio}
-        </p>
+        </div>
       )}
 
       {/* Education */}
       {education.length > 0 && (
-        <Section icon={<GraduationCap size={15} />} title="Education" sub="Riwayat pendidikan saya.">
+        <Section
+          icon={<GraduationCap size={15} />}
+          title="Education"
+          sub="Riwayat pendidikan saya."
+        >
           {education.map((edu, index) => {
             const expanded = visibleEduIndexes.includes(index);
             return (
@@ -81,8 +87,12 @@ const About = () => {
                   />
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-medium text-stone-900 leading-snug">{edu.institution}</p>
-                  <p className="text-[12px] text-stone-500 mt-0.5 truncate">{edu.degree}</p>
+                  <p className="text-[13px] font-medium text-stone-900 leading-snug">
+                    {edu.institution}
+                  </p>
+                  <p className="text-[12px] text-stone-500 mt-0.5 truncate">
+                    {edu.degree}
+                  </p>
                   <div className="flex flex-wrap gap-1.5 mt-2">
                     {edu.period && <MetaBadge mono>{edu.period}</MetaBadge>}
                     {edu.location && <MetaBadge>{edu.location}</MetaBadge>}
@@ -97,9 +107,15 @@ const About = () => {
                       />
                       {expanded && (
                         <ExpandBox>
-                          <ExpandGroup label="Activities & Responsibilities" items={edu.responsibilities} />
+                          <ExpandGroup
+                            label="Activities & Responsibilities"
+                            items={edu.responsibilities}
+                          />
                           {edu.achievements?.length > 0 && (
-                            <ExpandGroup label="Achievements" items={edu.achievements} />
+                            <ExpandGroup
+                              label="Achievements"
+                              items={edu.achievements}
+                            />
                           )}
                         </ExpandBox>
                       )}
@@ -114,7 +130,11 @@ const About = () => {
 
       {/* Career */}
       {careers.length > 0 && (
-        <Section icon={<Briefcase size={15} />} title="Career" sub="Pengalaman kerja dan kegiatan profesional saya.">
+        <Section
+          icon={<Briefcase size={15} />}
+          title="Career"
+          sub="Pengalaman kerja dan kegiatan profesional saya."
+        >
           {careers.map((exp, index) => {
             const expanded = visibleCareerIndexes.includes(index);
             return (
@@ -127,12 +147,20 @@ const About = () => {
                   />
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-medium text-stone-900 leading-snug">{exp.title}</p>
-                  <p className="text-[12px] text-stone-500 mt-0.5 truncate">{exp.company}</p>
+                  <p className="text-[13px] font-medium text-stone-900 leading-snug">
+                    {exp.title}
+                  </p>
+                  <p className="text-[12px] text-stone-500 mt-0.5 truncate">
+                    {exp.company}
+                  </p>
                   <div className="flex flex-wrap gap-1.5 mt-2">
                     {exp.period && <MetaBadge mono>{exp.period}</MetaBadge>}
                     {exp.location && <MetaBadge>{exp.location}</MetaBadge>}
-                    {exp.type && exp.mode && <MetaBadge>{exp.type} · {exp.mode}</MetaBadge>}
+                    {exp.type && exp.mode && (
+                      <MetaBadge>
+                        {exp.type} · {exp.mode}
+                      </MetaBadge>
+                    )}
                   </div>
 
                   {exp.description && (
@@ -146,11 +174,18 @@ const About = () => {
                       <ToggleBtn
                         expanded={expanded}
                         onClick={() => toggleCareerResponsibilities(index)}
-                        label={expanded ? "Hide responsibilities" : "Show responsibilities"}
+                        label={
+                          expanded
+                            ? "Hide responsibilities"
+                            : "Show responsibilities"
+                        }
                       />
                       {expanded && (
                         <ExpandBox>
-                          <ExpandGroup label="Responsibilities" items={exp.responsibilities} />
+                          <ExpandGroup
+                            label="Responsibilities"
+                            items={exp.responsibilities}
+                          />
                         </ExpandBox>
                       )}
                     </>
@@ -184,7 +219,9 @@ const Card = ({ children }) => (
 );
 
 const MetaBadge = ({ children, mono }) => (
-  <span className={`inline-flex items-center text-[11px] px-2 py-0.5 rounded-full border border-stone-200 bg-white text-stone-500 ${mono ? "font-mono" : ""}`}>
+  <span
+    className={`inline-flex items-center text-[11px] px-2 py-0.5 rounded-full border border-stone-200 bg-white text-stone-500 ${mono ? "font-mono" : ""}`}
+  >
     {children}
   </span>
 );
@@ -207,10 +244,15 @@ const ExpandBox = ({ children }) => (
 
 const ExpandGroup = ({ label, items }) => (
   <div>
-    <p className="text-[10px] font-semibold uppercase tracking-widest text-stone-400 mb-2">{label}</p>
+    <p className="text-[10px] font-semibold uppercase tracking-widest text-stone-400 mb-2">
+      {label}
+    </p>
     <ul className="flex flex-col gap-1.5">
       {items.map((item, idx) => (
-        <li key={idx} className="flex gap-2 text-[12px] text-stone-500 leading-relaxed">
+        <li
+          key={idx}
+          className="flex gap-2 text-[12px] text-stone-500 leading-relaxed"
+        >
           <span className="text-stone-300 mt-0.5 shrink-0">–</span>
           <span>{item}</span>
         </li>

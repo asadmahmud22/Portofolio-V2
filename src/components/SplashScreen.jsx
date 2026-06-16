@@ -29,7 +29,10 @@ export default function SplashScreen({ finishLoading }) {
           className="fullscreen flex flex-col items-center justify-center relative overflow-hidden"
           style={{ background: "#ffffff" }}
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { duration: 0.5, ease: "easeInOut" } }}
+          exit={{
+            opacity: 0,
+            transition: { duration: 0.5, ease: "easeInOut" },
+          }}
         >
           {/* Grain texture overlay */}
           <div
@@ -45,7 +48,8 @@ export default function SplashScreen({ finishLoading }) {
           <motion.div
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(0,0,0,0.03) 0%, transparent 70%)",
+              background:
+                "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(0,0,0,0.03) 0%, transparent 70%)",
             }}
             animate={{ opacity: [0, 1, 0.7] }}
             transition={{ duration: 2, ease: "easeOut" }}
@@ -54,7 +58,10 @@ export default function SplashScreen({ finishLoading }) {
           {/* Thin horizontal line top */}
           <motion.div
             className="absolute top-0 left-0 right-0 h-px"
-            style={{ background: "linear-gradient(90deg, transparent, rgba(0,0,0,0.15), transparent)" }}
+            style={{
+              background:
+                "linear-gradient(90deg, transparent, rgba(0,0,0,0.15), transparent)",
+            }}
             initial={{ scaleX: 0, opacity: 0 }}
             animate={phase >= 1 ? { scaleX: 1, opacity: 1 } : {}}
             transition={{ duration: 1.2, ease: "easeOut" }}
@@ -63,7 +70,10 @@ export default function SplashScreen({ finishLoading }) {
           {/* Thin horizontal line bottom */}
           <motion.div
             className="absolute bottom-0 left-0 right-0 h-px"
-            style={{ background: "linear-gradient(90deg, transparent, rgba(0,0,0,0.15), transparent)" }}
+            style={{
+              background:
+                "linear-gradient(90deg, transparent, rgba(0,0,0,0.15), transparent)",
+            }}
             initial={{ scaleX: 0, opacity: 0 }}
             animate={phase >= 1 ? { scaleX: 1, opacity: 1 } : {}}
             transition={{ duration: 1.2, ease: "easeOut", delay: 0.1 }}
@@ -94,7 +104,6 @@ export default function SplashScreen({ finishLoading }) {
 
           {/* Main content */}
           <div className="relative z-20 text-center px-6 select-none">
-
             {/* Small label above */}
             <motion.p
               style={{
@@ -131,7 +140,11 @@ export default function SplashScreen({ finishLoading }) {
                       lineHeight: 1.1,
                     }}
                     initial={{ opacity: 0, y: 40, filter: "blur(8px)" }}
-                    animate={phase >= 1 ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
+                    animate={
+                      phase >= 1
+                        ? { opacity: 1, y: 0, filter: "blur(0px)" }
+                        : {}
+                    }
                     transition={{
                       duration: 0.5,
                       delay: 0.1 + i * 0.04,
@@ -167,7 +180,7 @@ export default function SplashScreen({ finishLoading }) {
               animate={phase >= 2 ? { opacity: 1 } : {}}
               transition={{ duration: 0.8, ease: "easeOut" }}
             >
-              Web Developer · Designer · Problem Solver
+              Web Developer · Problem Solver
             </motion.p>
 
             {/* Progress bar area */}
@@ -207,7 +220,11 @@ export default function SplashScreen({ finishLoading }) {
                   fontFamily: "'Courier New', monospace",
                 }}
                 animate={{ opacity: [0.4, 1, 0.4] }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                transition={{
+                  duration: 1.5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
               >
                 Loading
               </motion.p>
